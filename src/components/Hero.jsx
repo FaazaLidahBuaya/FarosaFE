@@ -33,7 +33,7 @@ const Hero = () => {
         </div>
 
         {/* Floating Badges - Compact & Non-overlapping on Mobile & Desktop */}
-        <div className="absolute top-[74%] sm:top-[65%] md:top-[66%] left-2 sm:left-6 md:left-8 glass-card p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl max-w-[125px] sm:max-w-[170px] md:max-w-[210px] text-left border border-white/10 bg-black/50 backdrop-blur-xl shadow-xl z-20 transition-transform duration-300 hover:scale-105">
+        <div className="absolute top-[80%] sm:top-[70%] md:top-[68%] left-[8%] sm:left-12 md:left-16 glass-card p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl max-w-[130px] sm:max-w-[170px] md:max-w-[210px] text-left border border-white/10 bg-black/50 backdrop-blur-xl shadow-xl z-20 transition-transform duration-300 hover:scale-105">
           <p className="text-[10px] sm:text-xs text-gray-400 mb-1 flex justify-between items-center font-medium">
             <span className="truncate">Low Latency</span>
             <span className="bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[9px] sm:text-xs flex-shrink-0 ml-1">&#8599;</span>
@@ -42,7 +42,7 @@ const Hero = () => {
           <p className="text-[9px] sm:text-[11px] text-gray-400 mt-1 truncate">Gaming lancar & stabil</p>
         </div>
 
-        <div className="absolute top-[85%] sm:top-[76%] md:top-[75%] right-2 sm:right-6 md:right-8 glass-card p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl max-w-[125px] sm:max-w-[170px] md:max-w-[200px] text-left border border-white/10 bg-black/50 backdrop-blur-xl shadow-xl z-20 transition-transform duration-300 hover:scale-105">
+        <div className="absolute top-[90%] sm:top-[78%] md:top-[76%] right-[8%] sm:right-12 md:right-16 glass-card p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl max-w-[130px] sm:max-w-[170px] md:max-w-[200px] text-left border border-white/10 bg-black/50 backdrop-blur-xl shadow-xl z-20 transition-transform duration-300 hover:scale-105">
           <p className="text-[10px] sm:text-xs text-gray-400 mb-1 flex justify-between items-center font-medium">
             <span className="truncate">Ultra Speed</span>
             <span className="bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[9px] sm:text-xs flex-shrink-0 ml-1">&#8599;</span>
