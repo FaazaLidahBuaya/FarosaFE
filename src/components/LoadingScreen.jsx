@@ -1,51 +1,60 @@
 import React, { useEffect, useState } from 'react';
 
 const LoadingScreen = ({ onFinish }) => {
-  const [progress, setProgress] = useState(0);
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setFadeOut(true);
-            setTimeout(() => onFinish(), 600);
-          }, 300);
-          return 100;
-        }
-        // Accelerating progress
-        const increment = prev < 60 ? 3 : prev < 90 ? 2 : 1;
-        return Math.min(prev + increment, 100);
-      });
-    }, 30);
+    // Quick, smooth transition
+    const timer = setTimeout(() => {
+      setFadeOut(true);
+      setTimeout(() => onFinish && onFinish(), 500);
+    }, 800);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, [onFinish]);
 
   return (
-    <div className={`fixed inset-0 z-[200] bg-[#070709] flex flex-col items-center justify-center transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/20 rounded-full blur-[120px]"></div>
-      
-      {/* Logo */}
-      <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-8 font-display relative z-10">
-        Farosa
-      </h1>
-      
-      {/* Loading bar */}
-      <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden relative z-10">
+    <div 
+      className={`fixed inset-0 z-[999] bg-[#070709]/80 backdrop-blur-2xl flex flex-col items-center justify-center transition-all duration-500 pointer-events-none select-none ${
+        fadeOut ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+      }`}
+    >
+      <style>{`
+        @keyframes lightSweep {
+          0% { transform: translateX(-150%) skewX(-25deg); }
+          100% { transform: translateX(250%) skewX(-25deg); }
+        }
+      `}</style>
+
+      {/* Ambient background glow */}
+      <div className="absolute w-72 h-72 bg-primary/25 rounded-full blur-[100px] animate-pulse"></div>
+
+      {/* Glass card with sweeping light beam */}
+      <div className="relative overflow-hidden bg-white/5 border border-white/10 rounded-2xl p-8 px-10 shadow-2xl flex flex-col items-center gap-4">
+        {/* The Sweeping Light Beam */}
         <div 
-          className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-100 ease-out"
-          style={{ width: `${progress}%` }}
+          className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none"
+          style={{ animation: 'lightSweep 1.5s infinite ease-in-out' }}
         />
+
+        {/* Brand */}
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center font-bold text-white text-xl shadow-[0_0_20px_rgba(79,70,229,0.5)]">
+            F
+          </div>
+          <span className="text-2xl font-bold tracking-tight text-white font-display">
+            Farosa <span className="text-primary font-normal">WiFi</span>
+          </span>
+        </div>
+
+        {/* Minimalist Shimmer Bar */}
+        <div className="w-36 h-1 bg-white/10 rounded-full overflow-hidden relative z-10 mt-1">
+          <div 
+            className="w-full h-full bg-gradient-to-r from-primary via-cyan-400 to-accent rounded-full"
+            style={{ animation: 'lightSweep 1.2s infinite ease-in-out' }}
+          />
+        </div>
       </div>
-      
-      {/* Loading text */}
-      <p className="text-gray-500 text-xs mt-4 relative z-10 tracking-widest uppercase">
-        {progress < 100 ? 'Memuat...' : 'Selamat Datang'}
-      </p>
     </div>
   );
 };

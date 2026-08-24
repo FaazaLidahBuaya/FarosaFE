@@ -30,9 +30,9 @@ const FloatingChatbot = () => {
   };
 
   const fetchChatHistory = async (background = false) => {
+    if (!user) return;
     try {
-      const guestId = getGuestId();
-      const url = user ? `${API_BASE_URL}/api/chat?userId=${user._id}` : `${API_BASE_URL}/api/chat?guestId=${guestId}`;
+      const url = `${API_BASE_URL}/api/chat?userId=${user._id}`;
       const res = await axios.get(url);
       
       if (res.data) {
@@ -41,7 +41,7 @@ const FloatingChatbot = () => {
           setMessages(prev => {
             if (background && !isOpen && newMessages.length > prev.length) {
               const lastNewMsg = newMessages[newMessages.length - 1];
-              if (lastNewMsg.sender === 'bot') {
+              if (lastNewMsg.sender === 'bot' || lastNewMsg.sender === 'cs') {
                 setHasUnread(true);
               }
             }
@@ -53,7 +53,7 @@ const FloatingChatbot = () => {
         setMessages([{
           _id: Date.now().toString(),
           sender: 'bot',
-          text: 'Halo! 👋 Saya asisten virtual Farosa WiFi. Ada yang bisa saya bantu hari ini?'
+          text: `Halo ${user.name || ''}! 👋 Saya asisten virtual Farosa WiFi. Ada yang bisa saya bantu hari ini?`
         }]);
       }
     } catch (err) {
@@ -279,51 +279,88 @@ const FloatingChatbot = () => {
             </button>
           </div>
 
-          {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6 max-w-4xl w-full mx-auto">
-          {messages.map(msg => (
-            <div key={msg._id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-4 whitespace-pre-wrap ${
-                msg.sender === 'user' 
-                  ? 'bg-primary text-white rounded-tr-sm shadow-[0_5px_15px_rgba(79,70,229,0.3)]' 
-                  : 'bg-white/10 text-gray-200 rounded-tl-sm border border-white/5'
-              }`}>
-                {msg.text}
-              </div>
+          {/* Chat Messages Body */}
+          {user ? (
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6 max-w-4xl w-full mx-auto">
+              {messages.map(msg => (
+                <div key={msg._id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-4 whitespace-pre-wrap ${
+                    msg.sender === 'user' 
+                      ? 'bg-primary text-white rounded-tr-sm shadow-[0_5px_15px_rgba(79,70,229,0.3)]' 
+                      : 'bg-white/10 text-gray-200 rounded-tl-sm border border-white/5'
+                  }`}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-white/10 rounded-2xl rounded-tl-sm p-4 border border-white/5 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
+                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-          ))}
-          
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-white/10 rounded-2xl rounded-tl-sm p-4 border border-white/5 flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto">
+              <div className="w-16 h-16 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-4 shadow-[0_0_25px_rgba(79,70,229,0.3)]">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Login Diperlukan</h3>
+              <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+                Silakan masuk ke akun Farosa Anda terlebih dahulu untuk menggunakan fitur Live Chat dengan Customer Service & Asisten AI.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="flex-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg text-sm"
+                >
+                  Masuk Sekarang
+                </button>
+                <button 
+                  onClick={() => navigate('/register')}
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-6 rounded-xl transition-all border border-white/10 text-sm"
+                >
+                  Daftar Akun
+                </button>
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
-        </div>
 
-        {/* Chat Input */}
-        <div className="p-4 border-t border-white/10 bg-black/40">
-          <form onSubmit={handleSendMessage} className="flex gap-3 max-w-4xl w-full mx-auto">
-            <input 
-              type="text" 
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="Tulis pertanyaan Anda..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-primary transition-colors placeholder-gray-500"
-            />
-            <button 
-              type="submit"
-              disabled={!inputText.trim() || isTyping}
-              className="bg-primary hover:bg-primary-dark text-white px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center hover:shadow-[0_0_15px_rgba(79,70,229,0.4)]"
-            >
-              <svg className="w-6 h-6 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-            </button>
-          </form>
-        </div>
+          {/* Chat Input */}
+          <div className="p-4 border-t border-white/10 bg-black/40">
+            {user ? (
+              <form onSubmit={handleSendMessage} className="flex gap-3 max-w-4xl w-full mx-auto">
+                <input 
+                  type="text" 
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Tulis pertanyaan Anda..."
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-primary transition-colors placeholder-gray-500 text-sm"
+                />
+                <button 
+                  type="submit"
+                  disabled={!inputText.trim() || isTyping}
+                  className="bg-primary hover:bg-primary-dark text-white px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center hover:shadow-[0_0_15px_rgba(79,70,229,0.4)]"
+                >
+                  <svg className="w-6 h-6 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+              </form>
+            ) : (
+              <div className="py-2 text-center">
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
+                >
+                  🔒 Anda belum masuk. <span className="text-primary font-bold underline">Klik di sini untuk login</span>
+                </button>
+              </div>
+            )}
+          </div>
         
         </div>
       </div>
