@@ -38,26 +38,26 @@ const Scene = ({ showRocket = true }) => {
 
       // --- MOBILE (HP) ROCKET ANIMATIONS ---
       mm.add("(max-width: 767px)", () => {
-        // 1. HERO -> PAKET UNGGULAN (Lebih ke Kiri)
+        // 1. HERO -> PAKET UNGGULAN (Sedikit ke Kiri)
         gsap.timeline({
           scrollTrigger: { trigger: "#pricing", start: "top bottom", end: "top 20%", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: 0, y: -1, z: 3 }, { x: -2.4, y: -2.2, z: 4, ease: "power2.inOut" }, 0)
-        .fromTo(rocketObj.rotation, { x: 0.5, y: -1.2, z: 0.3 }, { x: -0.2, y: -1.0, z: 0.4, ease: "power2.inOut" }, 0);
+        .fromTo(rocketObj.position, { x: 0, y: -1, z: 3 }, { x: -1.1, y: -2, z: 4, ease: "power2.inOut" }, 0)
+        .fromTo(rocketObj.rotation, { x: 0.5, y: -1.2, z: 0.3 }, { x: -0.2, y: -0.8, z: 0.3, ease: "power2.inOut" }, 0);
 
-        // 1.5. PAKET UNGGULAN -> PILIHAN PAKET (Jauh ke Kanan Banget)
+        // 1.5. PAKET UNGGULAN -> PILIHAN PAKET (Ke Kanan yang Pas)
         gsap.timeline({
           scrollTrigger: { trigger: "#pilihan-paket", start: "top 95%", end: "top 5%", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: -2.4, y: -2.2, z: 4 }, { x: 4.2, y: -0.5, z: 3.5, ease: "power2.inOut", immediateRender: false }, 0)
-        .fromTo(rocketObj.rotation, { x: -0.2, y: -1.0, z: 0.4 }, { x: 0.4, y: 1.2, z: -0.4, ease: "power2.inOut", immediateRender: false }, 0);
+        .fromTo(rocketObj.position, { x: -1.1, y: -2, z: 4 }, { x: 1.5, y: -0.5, z: 3.5, ease: "power2.inOut", immediateRender: false }, 0)
+        .fromTo(rocketObj.rotation, { x: -0.2, y: -0.8, z: 0.3 }, { x: 0.3, y: 0.8, z: -0.3, ease: "power2.inOut", immediateRender: false }, 0);
 
         // 2. PILIHAN PAKET -> INFO
         gsap.timeline({
           scrollTrigger: { trigger: "#info", start: "top 95%", end: "center center", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: 4.2, y: -0.5, z: 3.5 }, { x: 5, y: 2, z: 2, ease: "power2.inOut", immediateRender: false }, 0)
-        .fromTo(rocketObj.rotation, { x: 0.4, y: 1.2, z: -0.4 }, { x: 0.5, y: -0.5, z: 0.2, ease: "power2.inOut", immediateRender: false }, 0);
+        .fromTo(rocketObj.position, { x: 1.5, y: -0.5, z: 3.5 }, { x: 3.5, y: 2, z: 2, ease: "power2.inOut", immediateRender: false }, 0)
+        .fromTo(rocketObj.rotation, { x: 0.3, y: 0.8, z: -0.3 }, { x: 0.5, y: -0.5, z: 0.2, ease: "power2.inOut", immediateRender: false }, 0);
       });
 
       // --- DESKTOP ROCKET ANIMATIONS ---
