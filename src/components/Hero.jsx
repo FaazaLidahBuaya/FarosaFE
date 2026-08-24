@@ -32,24 +32,24 @@ const Hero = () => {
           </a>
         </div>
 
-        {/* Floating Badges */}
-        <div className="absolute top-[60%] left-[10%] md:left-[5%] glass-card p-6 md:p-7 rounded-2xl max-w-[220px] text-left border border-white/10 bg-black/40 backdrop-blur-xl">
-          <p className="text-sm text-gray-400 mb-2 flex justify-between items-center">
-            Low Latency
-            <span className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center text-xs">&#8599;</span>
+        {/* Floating Badges - Compact & Non-overlapping on Mobile & Desktop */}
+        <div className="absolute top-[66%] sm:top-[58%] md:top-[60%] left-2 sm:left-6 md:left-8 glass-card p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl max-w-[125px] sm:max-w-[170px] md:max-w-[210px] text-left border border-white/10 bg-black/50 backdrop-blur-xl shadow-xl z-20 transition-transform duration-300 hover:scale-105">
+          <p className="text-[10px] sm:text-xs text-gray-400 mb-1 flex justify-between items-center font-medium">
+            <span className="truncate">Low Latency</span>
+            <span className="bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[9px] sm:text-xs flex-shrink-0 ml-1">&#8599;</span>
           </p>
-          <p className="text-white font-bold text-2xl">{'<'} 10ms</p>
-          <p className="text-xs text-gray-400 mt-2">Koneksi gaming stabil</p>
+          <p className="text-white font-bold text-base sm:text-xl md:text-2xl leading-tight">{'<'} 10ms</p>
+          <p className="text-[9px] sm:text-[11px] text-gray-400 mt-1 truncate">Gaming lancar & stabil</p>
         </div>
 
-        <div className="absolute top-[70%] right-[10%] md:right-[5%] glass-card p-5 rounded-2xl max-w-[200px] text-left border border-white/10 bg-black/40 backdrop-blur-xl">
-          <p className="text-xs text-gray-400 mb-2 flex justify-between">
-            Ultra Speed
-            <span className="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center text-[10px]">&#8599;</span>
+        <div className="absolute top-[78%] sm:top-[70%] md:top-[70%] right-2 sm:right-6 md:right-8 glass-card p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl max-w-[125px] sm:max-w-[170px] md:max-w-[200px] text-left border border-white/10 bg-black/50 backdrop-blur-xl shadow-xl z-20 transition-transform duration-300 hover:scale-105">
+          <p className="text-[10px] sm:text-xs text-gray-400 mb-1 flex justify-between items-center font-medium">
+            <span className="truncate">Ultra Speed</span>
+            <span className="bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[9px] sm:text-xs flex-shrink-0 ml-1">&#8599;</span>
           </p>
-          <p className="text-white font-bold text-xl">Up to 1Gbps</p>
-          <div className="w-full bg-white/10 h-1 mt-3 rounded-full overflow-hidden">
-            <div className="bg-white w-[96%] h-full"></div>
+          <p className="text-white font-bold text-sm sm:text-lg md:text-xl leading-tight">Up to 1Gbps</p>
+          <div className="w-full bg-white/15 h-1 sm:h-1.5 mt-2 rounded-full overflow-hidden">
+            <div className="bg-gradient-to-r from-primary to-accent w-[96%] h-full rounded-full"></div>
           </div>
         </div>
 

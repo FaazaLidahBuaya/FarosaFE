@@ -432,6 +432,7 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error sending message", error);
       showToast('Gagal mengirim pesan', 'error');
+      setLoadingReq(false);
     }
   };
 
@@ -439,63 +440,53 @@ const AdminDashboard = () => {
     switch (activeTab) {
       case 'overview':
         return (
-          <div className="flex flex-col lg:flex-row gap-6 h-full min-h-[85vh]">
-            {/* Left Big Panel: Network & 3D Rocket */}
-            <div className="lg:w-1/3 bg-white/5 border border-white/10 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between group/panel">
-              {/* Glows */}
+          <div className="flex flex-col lg:flex-row gap-6 w-full">
+            {/* Left Panel: Network & 3D Rocket */}
+            <div className="lg:w-1/3 bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 relative overflow-hidden flex flex-col justify-between group/panel shadow-xl">
               <div className="absolute top-[-20%] left-[-20%] w-[70%] h-[70%] bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
               
+              {/* Header & Badges */}
               <div className="relative z-10">
-                <h2 className="text-4xl font-display font-light mb-1 leading-tight text-white/90">Network &<br/><span className="font-bold text-white">Operations</span></h2>
+                <h2 className="text-xl sm:text-2xl font-bold leading-tight text-white mb-2">
+                  Network & <span className="text-primary">Operations</span>
+                </h2>
+                
+                {/* Metric Badges in a clean horizontal flow */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="inline-flex items-center gap-1.5 bg-black/40 border border-white/10 px-2.5 py-1 rounded-full text-xs text-gray-300">
+                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span className="font-bold text-white">99.9%</span> Uptime
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 bg-black/40 border border-white/10 px-2.5 py-1 rounded-full text-xs text-gray-300">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span className="font-bold text-white">15ms</span> Latency
+                  </div>
+                </div>
               </div>
 
               {/* 3D Canvas Background */}
-              <div className="absolute inset-0 z-0 opacity-80 pointer-events-none group-hover/panel:opacity-100 transition-opacity duration-1000">
+              <div className="relative w-full h-44 sm:h-52 md:h-60 my-2 z-0 opacity-90 pointer-events-none group-hover/panel:opacity-100 transition-opacity duration-500">
                 <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
                   <ambientLight intensity={0.5} />
                   <SpotLight position={[-10, 10, 5]} angle={1.2} penumbra={1} intensity={10} distance={40} color="#ffffff" castShadow volumetric={true} attenuation={15} anglePower={5} />
                   <directionalLight position={[10, -5, -5]} intensity={1.5} color="#4f46e5" />
                   <Suspense fallback={null}>
                     <Float speed={2} rotationIntensity={0.8} floatIntensity={1}>
-                       {/* Rotasi sedikit agar terlihat bagus */}
-                       <RocketModel rotation={[0.5, -0.5, 0.2]} scale={[1.2, 1.2, 1.2]} />
+                       <RocketModel rotation={[0.5, -0.5, 0.2]} scale={[1, 1, 1]} />
                     </Float>
                   </Suspense>
                   <Environment preset="studio" />
                 </Canvas>
               </div>
 
-              <div className="relative z-10 flex-1 flex flex-col justify-center pointer-events-none">
-                {/* Floating Metric 1 */}
-                <div className="absolute top-[20%] right-[5%] flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_#4ade80]"></div>
-                  <div className="text-xs text-gray-300">
-                    <span className="text-xl font-bold text-white block">99.9%</span>
-                    Uptime
-                  </div>
+              {/* Minimalist Clock Box */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3.5 backdrop-blur-md relative z-10 mt-2">
+                <div className="text-xs font-semibold text-gray-300 mb-1.5 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="truncate">{currentTime.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</span>
                 </div>
-
-                {/* Floating Metric 2 */}
-                <div className="absolute bottom-[20%] left-[5%] flex flex-col items-end gap-1">
-                  <div className="flex items-center gap-2">
-                    <div className="text-xs text-gray-300 text-right">
-                      <span className="text-xl font-bold text-white block">15ms</span>
-                      Latency
-                    </div>
-                    <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_10px_#4f46e5]"></div>
-                  </div>
-                  <span className="text-[10px] text-gray-500">Optimal</span>
-                </div>
-              </div>
-
-                            {/* Bottom Timeline/Bar (Replaced with Clock) */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-md relative z-10">
-                <div className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                  {currentTime.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                </div>
-                <div className="w-full bg-black/40 border border-white/5 rounded-xl p-3 flex justify-center items-center shadow-inner">
-                  <span className="text-4xl font-black font-mono tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400 drop-shadow-md">
+                <div className="w-full bg-black/50 border border-white/5 rounded-lg py-2 flex justify-center items-center shadow-inner">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400">
                     {currentTime.toLocaleTimeString('id-ID', { hour12: false })}
                   </span>
                 </div>
@@ -503,47 +494,47 @@ const AdminDashboard = () => {
             </div>
 
             {/* Right Bento Grid */}
-            <div className="lg:w-2/3 grid grid-cols-2 grid-rows-3 gap-6 h-full">
+            <div className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
               
-              {/* Tall Card */}
-              <div className="col-span-1 row-span-2 bg-gradient-to-br from-green-500/20 to-primary/20 border border-white/10 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between">
+              {/* Active Users Card */}
+              <div className="bg-gradient-to-br from-green-500/10 to-primary/10 border border-white/10 rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
                 <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm text-gray-300">Active Users</span>
-                    <span className="text-xs text-gray-400 bg-black/30 px-2 py-1 rounded-full">Bulan ini</span>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs sm:text-sm font-medium text-gray-300">Active Users</span>
+                    <span className="text-[10px] sm:text-xs text-gray-300 bg-black/40 border border-white/10 px-2.5 py-0.5 rounded-full whitespace-nowrap">Bulan ini</span>
                   </div>
-                  <div className="text-4xl font-bold text-white mb-1">{overviewStats ? overviewStats.totalUsers : 0}</div>
-                  <div className="text-sm text-green-300">+{overviewStats ? overviewStats.recentUsers : 0} users</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white tracking-tight">{overviewStats ? overviewStats.totalUsers : 0}</div>
+                  <div className="text-xs text-green-400 mt-0.5">+{overviewStats ? overviewStats.recentUsers : 0} users baru</div>
                 </div>
                 
-                {/* Abstract Line Art */}
-                <div className="relative w-full h-32 mt-4 flex items-center justify-center opacity-70">
-                  <svg viewBox="0 0 100 100" className="w-full h-full text-green-400" fill="none" stroke="currentColor" strokeWidth="0.5">
+                <div className="relative w-full h-24 mt-2 flex items-center justify-center opacity-60">
+                  <svg viewBox="0 0 100 100" className="w-full h-full text-green-400" fill="none" stroke="currentColor" strokeWidth="0.8">
                     <ellipse cx="50" cy="50" rx="40" ry="20" />
                     <ellipse cx="50" cy="50" rx="30" ry="40" />
                     <circle cx="50" cy="50" r="3" fill="currentColor" className="animate-ping" />
                   </svg>
                 </div>
                 
-                <div className="flex justify-between text-xs text-gray-400 mt-4 px-2">
+                <div className="flex justify-between text-[10px] sm:text-xs text-gray-400 mt-2 px-1">
                   <span>Low</span>
                   <span>Avg</span>
-                  <span className="text-white">Peak</span>
+                  <span className="text-white font-medium">Peak</span>
                 </div>
               </div>
 
-              {/* Top Right Card */}
-              <div className="col-span-1 row-span-1 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-white/10 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <span className="text-sm text-gray-300">Revenue</span>
-                  <button onClick={() => setShowRevenueDetails(true)} className="hover:text-white transition-colors cursor-pointer focus:outline-none">
-                    <svg className="w-4 h-4 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17l9.2-9.2M17 17V7H7" /></svg>
+              {/* Revenue Card */}
+              <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-white/10 rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs sm:text-sm font-medium text-gray-300">Revenue</span>
+                  <button onClick={() => setShowRevenueDetails(true)} className="p-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors cursor-pointer" title="Lihat Detail">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17l9.2-9.2M17 17V7H7" /></svg>
                   </button>
                 </div>
-                <div className="text-3xl font-bold text-white">Rp {overviewStats ? (overviewStats.revenue / 1000000).toFixed(1) : 0} Jt</div>
+                <div className="text-xl sm:text-2xl font-bold text-white whitespace-nowrap mt-1">
+                  Rp {overviewStats ? (overviewStats.revenue / 1000000).toFixed(1) : 0} <span className="text-sm font-normal text-gray-400">Jt</span>
+                </div>
                 
-                {/* Revenue Chart (Mini) */}
-                <div className="w-full h-16 mt-2 relative">
+                <div className="w-full h-14 mt-1 relative">
                   <svg viewBox="0 0 120 45" className="w-full h-full text-yellow-500 overflow-visible">
                     <defs>
                       <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
@@ -558,20 +549,21 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Middle Right Card */}
-              <div className="col-span-1 row-span-1 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-white/10 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <span className="text-sm text-gray-300">Bandwidth Load</span>
-                  <button onClick={() => setShowBandwidthDetails(true)} className="hover:text-white transition-colors cursor-pointer focus:outline-none">
-                    <svg className="w-4 h-4 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17l9.2-9.2M17 17V7H7" /></svg>
+              {/* Bandwidth Load Card */}
+              <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-white/10 rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs sm:text-sm font-medium text-gray-300">Bandwidth Load</span>
+                  <button onClick={() => setShowBandwidthDetails(true)} className="p-1 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors cursor-pointer" title="Lihat Detail">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17l9.2-9.2M17 17V7H7" /></svg>
                   </button>
                 </div>
-                <div className="text-3xl font-bold text-white">0.5 <span className="text-lg font-normal text-gray-400">TB</span></div>
+                <div className="text-xl sm:text-2xl font-bold text-white whitespace-nowrap mt-1">
+                  0.5 <span className="text-sm font-normal text-gray-400">TB</span>
+                </div>
                 
-                {/* Bandwidth Chart (Mini) */}
-                <div className="w-full h-16 mt-2 relative">
+                <div className="w-full h-14 mt-1 relative">
                   <svg viewBox="0 0 120 45" className="w-full h-full text-cyan-400 overflow-visible">
-                    <defs>
+<defs>
                       <linearGradient id="bwGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="currentColor" stopOpacity="0.2"/>
                         <stop offset="100%" stopColor="currentColor" stopOpacity="0.0"/>
@@ -584,24 +576,21 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Bottom Small Cards */}
-              <div className="col-span-2 row-span-1 grid grid-cols-1 gap-6">
-                <div className="bg-gradient-to-br from-orange-500/20 to-red-500/10 border border-white/10 rounded-3xl p-5 flex flex-col justify-between">
-                  <div className="flex justify-between items-center">
-                    <div className="text-xs text-gray-400">Pemasangan Baru</div>
-                    <span className="text-[10px] text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">Live</span>
-                  </div>
-                  <div className="flex items-baseline justify-between mt-1">
-                    <div className="text-3xl font-black text-white">+{overviewStats ? overviewStats.totalInst : 0}</div>
-                    <div className="text-xs text-gray-400 font-medium">Permintaan aktif</div>
-                  </div>
-                  {/* Minimalist Sparkline Activity */}
-                  <div className="w-full h-8 mt-2">
-                    <svg viewBox="0 0 100 24" className="w-full h-full text-orange-400 overflow-visible">
-                      <path d="M2,18 L15,16 L30,20 L45,10 L60,14 L75,6 L90,12 L98,4" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-                      <circle cx="98" cy="4" r="2" fill="currentColor" className="animate-ping" />
-                    </svg>
-                  </div>
+              {/* Pemasangan Baru Card */}
+              <div className="sm:col-span-2 bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs sm:text-sm font-medium text-gray-300">Pemasangan Baru</span>
+                  <span className="text-[10px] text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">Live</span>
+                </div>
+                <div className="flex items-baseline justify-between mt-1">
+                  <div className="text-2xl sm:text-3xl font-bold text-white">+{overviewStats ? overviewStats.totalInst : 0}</div>
+                  <div className="text-xs text-gray-400 font-medium">Permintaan aktif</div>
+                </div>
+                <div className="w-full h-8 mt-1">
+                  <svg viewBox="0 0 100 24" className="w-full h-full text-orange-400 overflow-visible">
+                    <path d="M2,18 L15,16 L30,20 L45,10 L60,14 L75,6 L90,12 L98,4" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="98" cy="4" r="2" fill="currentColor" className="animate-ping" />
+                  </svg>
                 </div>
               </div>
 
@@ -611,7 +600,7 @@ const AdminDashboard = () => {
       case 'chat': {
         const contacts = [];
         
-        if (['admin', 'cs'].includes(user.role)) {
+        if (['admin', 'cs', 'owner', 'manager'].includes(user.role)) {
           (Array.isArray(allChats) ? allChats : []).forEach(c => {
             const lastMsg = c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1] : null;
             const name = c.userId ? c.userId.name : `Guest (${c.guestId?.substring(0,6)})`;
@@ -662,41 +651,41 @@ const AdminDashboard = () => {
         );
 
         return (
-          <div className="w-full h-full flex bg-black/40 text-white overflow-hidden">
+          <div className="w-full h-[calc(100vh-6rem)] md:h-[calc(100vh-4.5rem)] flex bg-[#0d0d12]/95 border border-white/10 rounded-2xl overflow-hidden shadow-2xl text-white">
             
-              {/* Left Col: Sidebar List */}
-              <div className="w-[320px] border-r border-white/10 flex flex-col bg-black/20">
-                <div className="p-6 border-b border-white/10">
-                  <h2 className="text-2xl font-bold mb-4">Chats</h2>
+              {/* Left Col: Sidebar Contacts List (hidden on mobile when a chat is selected) */}
+              <div className={`w-full md:w-[320px] md:min-w-[300px] border-r border-white/10 flex flex-col bg-black/40 ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
+                <div className="p-4 border-b border-white/10">
+                  <h2 className="text-xl font-bold mb-3">Chats</h2>
                   <input 
                     type="text" 
                     placeholder="Search chats..." 
                     value={chatSearch}
                     onChange={e => setChatSearch(e.target.value)}
-                    className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary text-white" 
+                    className="w-full bg-black/50 border border-white/10 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-primary text-white" 
                   />
                 </div>
                 <div className="flex-1 overflow-y-auto">
                   {filteredContacts.length === 0 ? (
-                    <div className="p-4 text-center text-gray-500">Belum ada obrolan</div>
+                    <div className="p-4 text-center text-gray-500 text-xs">Belum ada obrolan</div>
                   ) : (
                     filteredContacts.map(c => (
                       <div 
                         key={c.id} 
                         onClick={() => setSelectedChat(c)}
-                        className={`p-4 border-b border-white/5 cursor-pointer transition-colors flex gap-3 items-center ${selectedChat?.id === c.id ? 'bg-primary/20' : 'hover:bg-white/5'} ${c.isUnread ? 'bg-white/5' : ''}`}
+                        className={`p-3.5 border-b border-white/5 cursor-pointer transition-colors flex gap-3 items-center ${selectedChat?.id === c.id ? 'bg-primary/20 border-primary/30' : 'hover:bg-white/5'} ${c.isUnread ? 'bg-white/5' : ''}`}
                       >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold flex-shrink-0 shadow-lg relative">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg relative">
                           {c.initial}
-                          {c.type === 'staff' && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-black rounded-full"></div>}
-                          {c.isUnread && <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-black rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>}
+                          {c.type === 'staff' && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-black rounded-full"></div>}
+                          {c.isUnread && <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 border-2 border-black rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-center mb-1">
-                            <h3 className={`font-bold text-sm truncate ${c.isUnread ? 'text-white' : 'text-gray-300'}`}>{c.name}</h3>
-                            {c.type === 'customer' && c.csMode && <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold ml-1 flex-shrink-0">CS</span>}
+                          <div className="flex justify-between items-center mb-0.5">
+                            <h3 className={`font-bold text-xs truncate ${c.isUnread ? 'text-white' : 'text-gray-300'}`}>{c.name}</h3>
+                            {c.type === 'customer' && c.csMode && <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.2 rounded font-bold ml-1 flex-shrink-0">CS</span>}
                           </div>
-                          <p className={`text-xs truncate ${c.isUnread ? 'text-gray-300 font-medium' : 'text-gray-500'}`}>
+                          <p className={`text-[11px] truncate ${c.isUnread ? 'text-gray-200 font-medium' : 'text-gray-500'}`}>
                             {c.lastMessage}
                           </p>
                         </div>
@@ -706,102 +695,111 @@ const AdminDashboard = () => {
                 </div>
               </div>
               
-              {/* Middle Col: Chat View */}
-              <div className="flex-1 flex flex-col">
+              {/* Middle Col: Chat Message Conversation View */}
+              <div className={`flex-1 flex-col bg-black/20 ${selectedChat ? 'flex' : 'hidden md:flex'}`}>
                 {selectedChat ? (
                   <>
-                    <div className="p-4 border-b border-white/10 bg-black/40 flex justify-between items-center h-[72px]">
+                    <div className="px-4 py-3 border-b border-white/10 bg-black/40 flex justify-between items-center min-h-[60px]">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold flex-shrink-0 shadow-[0_0_15px_rgba(79,70,229,0.3)]">
+                        {/* Mobile Back Button */}
+                        <button 
+                          onClick={() => setSelectedChat(null)}
+                          className="md:hidden p-1.5 -ml-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg"
+                          title="Kembali ke daftar chat"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                           {selectedChat.initial}
                         </div>
                         <div>
-                          <h3 className="font-bold">{selectedChat.name}</h3>
-                          <p className="text-xs text-gray-400 capitalize">{selectedChat.role}</p>
+                          <h3 className="font-bold text-sm">{selectedChat.name}</h3>
+                          <p className="text-[10px] text-gray-400 capitalize">{selectedChat.role}</p>
                         </div>
                       </div>
                       <div className="flex gap-2">
                         {selectedChat.type === 'customer' && !selectedChat.csMode && (
-                          <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded">Bot Mode</span>
+                          <span className="bg-gray-700 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">Bot Mode</span>
                         )}
                         {selectedChat.type === 'customer' && selectedChat.csMode && (
-                          <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">CS Mode</span>
+                          <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">CS Mode</span>
                         )}
                         {selectedChat.type === 'staff' && (
-                          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded">Internal</span>
+                          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">Internal</span>
                         )}
                       </div>
                     </div>
                     
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-3">
                       {selectedChat.type === 'customer' && selectedChat.data.messages.map((msg, i) => (
                         <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-start' : 'justify-end'}`}>
-                          <div className={`max-w-[80%] p-3 rounded-xl text-sm shadow-md ${msg.sender === 'user' ? 'bg-white/10 text-white rounded-tl-none' : 'bg-primary text-white rounded-tr-none'}`}>
+                          <div className={`max-w-[85%] sm:max-w-[75%] p-3 rounded-xl text-xs sm:text-sm shadow-md ${msg.sender === 'user' ? 'bg-white/10 text-white rounded-tl-none' : 'bg-primary text-white rounded-tr-none'}`}>
                             {msg.text}
                           </div>
                         </div>
                       ))}
                       
                       {selectedChat.type === 'staff' && staffMessages.length === 0 && (
-                        <div className="text-center text-gray-500 mt-10 text-sm">Belum ada obrolan dengan {selectedChat.name}.</div>
+                        <div className="text-center text-gray-500 mt-10 text-xs">Belum ada obrolan dengan {selectedChat.name}.</div>
                       )}
                       
                       {selectedChat.type === 'staff' && staffMessages.map((msg, i) => {
                         const isMe = msg.sender && msg.sender._id === user._id;
                         return (
                           <div key={i} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] p-3 rounded-xl text-sm shadow-md ${isMe ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
+                            <div className={`max-w-[85%] sm:max-w-[75%] p-3 rounded-xl text-xs sm:text-sm shadow-md ${isMe ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
                               {msg.text}
                             </div>
                           </div>
                         );
                       })}
-                    <div ref={messagesEndRef} />
-                      </div>
+                      <div ref={messagesEndRef} />
+                    </div>
                       
-                      <form onSubmit={handleSendMessage} className="p-4 border-t border-white/10 bg-black/20 flex gap-2">
+                    <form onSubmit={handleSendMessage} className="p-3 border-t border-white/10 bg-black/30 flex gap-2">
                       <input 
                         type="text" 
                         value={chatInput}
                         onChange={e => setChatInput(e.target.value)}
-                        className="flex-1 bg-black/40 border border-white/10 rounded-full px-5 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white" 
+                        className="flex-1 bg-black/50 border border-white/10 rounded-full px-4 py-2 text-xs focus:outline-none focus:border-primary text-white" 
                         placeholder="Ketik pesan..." 
                       />
-                      <button type="submit" disabled={!chatInput.trim()} className="bg-primary hover:bg-indigo-500 w-11 h-11 rounded-full flex items-center justify-center font-bold disabled:opacity-50 transition-colors">
-                        <svg className="w-5 h-5 translate-x-[-1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                      <button type="submit" disabled={!chatInput.trim()} className="bg-primary hover:bg-indigo-500 w-9 h-9 rounded-full flex items-center justify-center font-bold disabled:opacity-50 transition-colors flex-shrink-0">
+                        <svg className="w-4 h-4 translate-x-[-1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                       </button>
                     </form>
                   </>
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
-                    <svg className="w-16 h-16 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    <p>Pilih kontak untuk mulai ngobrol</p>
+                  <div className="flex-1 flex flex-col items-center justify-center text-gray-500 p-4 text-center">
+                    <svg className="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    <p className="text-xs">Pilih salah satu kontak di sisi kiri untuk mulai mengobrol</p>
                   </div>
                 )}
               </div>
 
-              {/* Right Col: User Info Profile */}
+              {/* Right Col: User Info Profile (hidden on small laptops/mobile) */}
               {selectedChat && (
-                <div className="w-[280px] border-l border-white/10 bg-black/20 p-6 flex flex-col items-center overflow-y-auto">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-3xl font-bold shadow-xl mb-4">
+                <div className="hidden xl:flex w-[260px] border-l border-white/10 bg-black/40 p-5 flex-col items-center overflow-y-auto">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xl font-bold shadow-xl mb-3">
                     {selectedChat.initial}
                   </div>
-                  <h3 className="text-xl font-bold text-center mb-1">{selectedChat.name}</h3>
-                  <p className="text-sm text-gray-400 capitalize mb-6">{selectedChat.role}</p>
+                  <h3 className="text-base font-bold text-center mb-0.5">{selectedChat.name}</h3>
+                  <p className="text-xs text-gray-400 capitalize mb-4">{selectedChat.role}</p>
 
-                  <div className="w-full space-y-4">
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                      <p className="text-xs text-gray-500 mb-1">Email</p>
-                      <p className="text-sm font-medium break-all">{selectedChat.email}</p>
+                  <div className="w-full space-y-3">
+                    <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                      <p className="text-[10px] text-gray-500 mb-0.5">Email</p>
+                      <p className="text-xs font-medium break-all text-gray-200">{selectedChat.email}</p>
                     </div>
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                      <p className="text-xs text-gray-500 mb-1">No. Telepon</p>
-                      <p className="text-sm font-medium">{selectedChat.phone}</p>
+                    <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                      <p className="text-[10px] text-gray-500 mb-0.5">No. Telepon</p>
+                      <p className="text-xs font-medium text-gray-200">{selectedChat.phone}</p>
                     </div>
                     {selectedChat.type === 'customer' && (
-                      <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                        <p className="text-xs text-gray-500 mb-1">Alamat</p>
-                        <p className="text-sm font-medium leading-relaxed">{selectedChat.address}</p>
+                      <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                        <p className="text-[10px] text-gray-500 mb-0.5">Alamat</p>
+                        <p className="text-xs font-medium leading-relaxed text-gray-200">{selectedChat.address}</p>
                       </div>
                     )}
                   </div>
@@ -821,71 +819,78 @@ const AdminDashboard = () => {
         };
         return (
           <>
-          <div className="glass-card">
-            <div className="p-6 border-b border-white/10 flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Daftar Pengajuan Pasang</h2>
-              <button onClick={fetchRequests} className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-colors flex items-center gap-2" title="Refresh">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          <div className="glass-card p-4 sm:p-6">
+            <div className="pb-4 mb-4 border-b border-white/10 flex justify-between items-center">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold">Daftar Pengajuan Pasang</h2>
+                <p className="text-xs text-gray-400">Kelola dan konfirmasi pesanan pelanggan</p>
+              </div>
+              <button onClick={fetchRequests} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5" title="Refresh">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 Refresh
               </button>
             </div>
-            <div className="w-full relative pb-24">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-white/5 border-b border-white/10">
+            
+            {/* Scrollable Responsive Table */}
+            <div className="w-full overflow-x-auto rounded-xl border border-white/10 bg-black/20 pb-16">
+              <table className="w-full text-left text-xs sm:text-sm min-w-[650px] whitespace-nowrap">
+                <thead className="bg-white/5 border-b border-white/10 text-gray-300 text-xs font-semibold uppercase tracking-wider">
                   <tr>
-                    <th className="p-4 font-semibold text-gray-300">Pelanggan</th>
-                    <th className="p-4 font-semibold text-gray-300">Kontak</th>
-                    <th className="p-4 font-semibold text-gray-300">Paket & Alamat</th>
-                    <th className="p-4 font-semibold text-gray-300">Status</th>
-                    <th className="p-4 font-semibold text-gray-300">Jadwal & Tim</th>
-                    <th className="p-4 font-semibold text-gray-300 text-right">Aksi</th>
+                    <th className="p-3.5">Pelanggan</th>
+                    <th className="p-3.5">Kontak</th>
+                    <th className="p-3.5">Paket & Alamat</th>
+                    <th className="p-3.5">Status</th>
+                    <th className="p-3.5">Jadwal & Tim</th>
+                    <th className="p-3.5 text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {loadingReq ? (
-                    <tr><td colSpan="6" className="p-4 text-center">Loading...</td></tr>
+                    <tr><td colSpan="6" className="p-6 text-center text-xs text-gray-400">Memuat data pengajuan...</td></tr>
+                  ) : requests.length === 0 ? (
+                    <tr><td colSpan="6" className="p-6 text-center text-xs text-gray-400">Belum ada pengajuan pasang.</td></tr>
                   ) : requests.map(req => (
                     <tr key={req._id} className="hover:bg-white/5 transition-colors">
-                      <td className="p-4">
-                        <div className="font-medium text-white">{req.fullName}</div>
-                        <div className="text-xs text-gray-500">{new Date(req.createdAt).toLocaleDateString('id-ID')}</div>
+                      <td className="p-3.5">
+                        <div className="font-semibold text-white">{req.fullName}</div>
+                        <div className="text-[10px] text-gray-500">{new Date(req.createdAt).toLocaleDateString('id-ID')}</div>
                       </td>
-                      <td className="p-4 text-gray-400">
-                        <div>{req.phoneNumber}</div>
-                        <div className="text-xs">{req.email}</div>
+                      <td className="p-3.5 text-gray-400">
+                        <div className="text-xs">{req.phoneNumber}</div>
+                        <div className="text-[11px] text-gray-500">{req.email}</div>
                       </td>
-                      <td className="p-4">
-                        <div className="text-accent font-medium">{req.selectedPackage}</div>
-                        {req.packagePrice > 0 && <div className="text-xs text-gray-400">Rp {req.packagePrice.toLocaleString('id-ID')}/bln</div>}
-                        <div className="text-xs text-gray-500 max-w-[200px] truncate" title={req.fullAddress}>{req.fullAddress}</div>
+                      <td className="p-3.5">
+                        <div className="text-accent font-medium text-xs">{req.selectedPackage}</div>
+                        {req.packagePrice > 0 && <div className="text-[10px] text-gray-400">Rp {req.packagePrice.toLocaleString('id-ID')}/bln</div>}
+                        <div className="text-[10px] text-gray-500 max-w-[180px] truncate" title={req.fullAddress}>{req.fullAddress}</div>
                       </td>
-                      <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium border border-white/10 whitespace-nowrap ${statusColors[req.status] || 'bg-gray-500/20 text-gray-300'}`}>{req.status}</span>
+                      <td className="p-3.5">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium border border-white/10 whitespace-nowrap ${statusColors[req.status] || 'bg-gray-500/20 text-gray-300'}`}>{req.status}</span>
                       </td>
-                      <td className="p-4">
+                      <td className="p-3.5">
                         {req.installationDate ? (
-                          <div className="space-y-1.5">
-                            <div className="text-xs text-cyan-300 flex items-center">
-                              <svg className="w-3.5 h-3.5 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                          <div className="space-y-1">
+                            <div className="text-[11px] text-cyan-300 flex items-center">
+                              <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                               {new Date(req.installationDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </div>
-                            <div className="text-xs text-gray-400 flex items-center">
-                              <svg className="w-3.5 h-3.5 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                              {req.assignedTeam}
+                            <div className="text-[11px] text-gray-400 flex items-center">
+                              <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                              {req.assignedTeam || 'Belum ada tim'}
                             </div>
                           </div>
                         ) : (
-                          <span className="text-xs text-gray-600">-</span>
+                          <span className="text-[11px] text-gray-500">-</span>
                         )}
                       </td>
-                      <td className="p-4 text-right">
+                      <td className="p-3.5 text-right">
                         <div className="flex items-center justify-end gap-2">
                           {req.status === 'Pending' && (
                             <button 
                               onClick={() => setConfirmModal(req)}
-                              className="bg-green-500/20 text-green-300 hover:bg-green-500 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                              className="bg-green-500/20 text-green-300 hover:bg-green-500 hover:text-white px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                               Konfirmasi
                             </button>
                           )}
@@ -893,23 +898,20 @@ const AdminDashboard = () => {
                             <button
                               onClick={() => setOpenStatusDropdown(openStatusDropdown === req._id ? null : req._id)}
                               onBlur={() => setTimeout(() => setOpenStatusDropdown(null), 200)}
-                              className="bg-black/30 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-primary flex items-center justify-between min-w-[130px] transition-colors hover:bg-white/5"
+                              className="bg-black/40 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-primary flex items-center justify-between min-w-[110px] transition-colors hover:bg-white/5"
                             >
                               <span>{req.status}</span>
-                              <svg className={`w-4 h-4 ml-2 transition-transform ${openStatusDropdown === req._id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                              <svg className={`w-3.5 h-3.5 ml-1.5 transition-transform ${openStatusDropdown === req._id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                             
-                            <div className={`absolute right-0 top-full mt-1 w-full min-w-[140px] bg-[#0f172a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 transition-all duration-200 origin-top ${openStatusDropdown === req._id ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                              {['Pending', 'Dikonfirmasi', 'Survey Lokasi', 'Proses Pasang', 'Aktif', 'Ditolak'].map((s) => (
+                            <div className={`absolute right-0 top-full mt-1 w-36 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 transition-all duration-200 origin-top-right ${openStatusDropdown === req._id ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                              {['Pending', 'Dikonfirmasi', 'Survey Lokasi', 'Proses Pasang', 'Aktif', 'Ditolak'].map((st) => (
                                 <div 
-                                  key={s}
-                                  onClick={() => {
-                                    handleStatusChange(req._id, s);
-                                    setOpenStatusDropdown(null);
-                                  }}
-                                  className={`px-4 py-2.5 text-sm text-left cursor-pointer transition-colors hover:bg-primary/80 ${req.status === s ? 'bg-primary/20 text-white font-medium' : 'text-gray-200'}`}
+                                  key={st}
+                                  onClick={() => handleUpdateStatus(req._id, st)}
+                                  className={`px-3 py-1.5 text-xs text-left cursor-pointer transition-colors hover:bg-primary/80 ${req.status === st ? 'bg-primary/20 text-white font-medium' : 'text-gray-300'}`}
                                 >
-                                  {s}
+                                  {st}
                                 </div>
                               ))}
                             </div>
@@ -918,11 +920,6 @@ const AdminDashboard = () => {
                       </td>
                     </tr>
                   ))}
-                  {!loadingReq && requests.length === 0 && (
-                    <tr>
-                      <td colSpan="6" className="p-8 text-center text-gray-500">Belum ada pengajuan pemasangan.</td>
-                    </tr>
-                  )}
                 </tbody>
               </table>
             </div>
@@ -1018,254 +1015,241 @@ const AdminDashboard = () => {
             </div>
           )}
           </>
-          );
-        }
-      case 'promo':
-        return (
-          <div className="glass-card p-6">
-            <h2 className="text-2xl font-bold mb-6">Manajemen Promo</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                <h3 className="font-semibold text-accent mb-2">Promo Merdeka</h3>
-                <p className="text-sm text-gray-400 mb-4">Diskon 17% pemasangan baru selama bulan Agustus.</p>
-                <div className="flex gap-2">
-                  <button className="bg-primary/20 text-primary px-3 py-1 rounded text-sm hover:bg-primary hover:text-white transition-colors">Edit</button>
-                  <button className="bg-red-500/20 text-red-400 px-3 py-1 rounded text-sm hover:bg-red-500 hover:text-white transition-colors">Hapus</button>
-                </div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 border-dashed flex flex-col items-center justify-center text-gray-400 hover:bg-white/10 transition-colors cursor-pointer min-h-[150px]">
-                <span className="text-3xl mb-2">+</span>
-                <p>Tambah Promo Baru</p>
-              </div>
-            </div>
-          </div>
         );
+      }
       case 'packages':
         return (
-          <>
-          <div className="glass-card p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Manajemen Paket & Promo</h2>
-              <button 
-                onClick={() => {
-                  setNewPackage({ name: '', speed: '', price: '', category: 'Internet', badge: '', features: '' });
-                  setShowPackageModal(true);
-                }}
-                className="bg-primary hover:bg-indigo-500 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-              >
-                + Tambah Baru
-              </button>
+          <div className="glass-card p-4 sm:p-6">
+            <div className="pb-4 mb-4 border-b border-white/10 flex justify-between items-center">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold">Paket & Promo</h2>
+                <p className="text-xs text-gray-400">Atur katalog paket internet yang tampil di landing page</p>
+              </div>
+              <button onClick={() => { setNewPackage({ name: '', speed: '', price: '', category: 'Internet', badge: '', features: '' }); setShowPackageModal(true); }} className="bg-primary hover:bg-indigo-500 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-lg">+ Tambah Paket</button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {dbPackages.map((pkg) => (
-                <div key={pkg._id} className="bg-white/5 border border-white/10 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group">
+                <div key={pkg._id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group shadow-md hover:border-primary/50 transition-all">
                   {pkg.badge && pkg.badge !== '' && (
-                    <div className={`absolute top-0 right-0 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg ${pkg.badge === 'Paling Populer' ? 'bg-primary' : pkg.badge === 'Paling Murah' ? 'bg-green-500' : 'bg-orange-500'}`}>
+                    <div className={`absolute top-0 right-0 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-bl-lg ${pkg.badge === 'Paling Populer' ? 'bg-primary' : pkg.badge === 'Paling Murah' ? 'bg-green-500' : 'bg-orange-500'}`}>
                       {pkg.badge.toUpperCase()}
                     </div>
                   )}
                   <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className={`text-xs px-2 py-1 rounded border ${pkg.category === 'Promo' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-white/10 text-gray-300 border-white/20'}`}>
+                    <div className="flex justify-between items-start mb-1.5">
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full border ${pkg.category === 'Promo' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-white/10 text-gray-300 border-white/20'}`}>
                         {pkg.category}
                       </span>
                     </div>
-                    <h3 className="font-bold text-lg text-white mt-2">{pkg.name}</h3>
-                    <p className="text-sm text-gray-400 mt-1">{pkg.speed} Mbps</p>
-                    <p className="text-xl font-bold text-accent mt-3">Rp {pkg.price.toLocaleString('id-ID')}</p>
-                    <ul className="mt-4 space-y-2 mb-6">
+                    <h3 className="font-bold text-base text-white mt-1">{pkg.name}</h3>
+                    <p className="text-xs text-gray-400">{pkg.speed} Mbps</p>
+                    <p className="text-lg font-bold text-accent mt-2">Rp {pkg.price.toLocaleString('id-ID')}</p>
+                    <ul className="mt-3 space-y-1.5 mb-4">
                       {pkg.features.slice(0, 3).map((feat, idx) => (
-                        <li key={idx} className="text-xs text-gray-400 flex gap-2"><span className="text-primary">✓</span> {feat}</li>
+                        <li key={idx} className="text-xs text-gray-300 flex items-center gap-1.5"><span className="text-primary font-bold">✓</span> {feat}</li>
                       ))}
-                      {pkg.features.length > 3 && <li className="text-xs text-gray-500 italic">+{pkg.features.length - 3} fitur lainnya</li>}
+                      {pkg.features.length > 3 && <li className="text-[10px] text-gray-500 italic">+{pkg.features.length - 3} fitur lainnya</li>}
                     </ul>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 pt-2 border-t border-white/5">
                     <button 
                       onClick={() => {
                         setNewPackage({...pkg, features: pkg.features.join(', ')});
                         setShowPackageModal(true);
                       }} 
-                      className="w-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 px-3 py-2 rounded-lg text-sm transition-colors"
+                      className="flex-1 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 py-1.5 rounded-lg text-xs font-semibold transition-colors"
                     >
                       Edit
                     </button>
-                    <button onClick={() => handleDeletePackage(pkg._id)} className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg text-sm transition-colors">Hapus</button>
+                    <button onClick={() => handleDeletePackage(pkg._id)} className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 py-1.5 rounded-lg text-xs font-semibold transition-colors">Hapus</button>
                   </div>
                 </div>
               ))}
-              {dbPackages.length === 0 && <div className="col-span-full text-center text-gray-400 py-8">Belum ada paket/promo.</div>}
+              {dbPackages.length === 0 && <div className="col-span-full text-center text-gray-400 py-8 text-xs">Belum ada paket/promo.</div>}
             </div>
-          </div>
 
-          {showPackageModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-              <div className="bg-[#0d0d12] border border-white/10 rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl overflow-y-auto max-h-[90vh]">
-                <h3 className="text-xl font-bold mb-4">{newPackage._id ? 'Edit Paket/Promo' : 'Tambah Paket/Promo'}</h3>
-                <form onSubmit={handleAddPackage} className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-1">Nama Paket/Promo</label>
-                    <input required type="text" value={newPackage.name} onChange={e => setNewPackage({...newPackage, name: e.target.value})} className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+            {showPackageModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                <div className="bg-[#0d0d12] border border-white/10 rounded-2xl p-6 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[90vh]">
+                  <h3 className="text-xl font-bold mb-4">{newPackage._id ? 'Edit Paket/Promo' : 'Tambah Paket/Promo'}</h3>
+                  <form onSubmit={handleAddPackage} className="space-y-4">
                     <div>
-                      <label className="block text-sm text-gray-400 mb-1">Kecepatan (Mbps)</label>
-                      <input required type="number" value={newPackage.speed} onChange={e => setNewPackage({...newPackage, speed: e.target.value})} className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style={{ MozAppearance: 'textfield' }} />
+                      <label className="block text-xs text-gray-400 mb-1">Nama Paket/Promo</label>
+                      <input required type="text" value={newPackage.name} onChange={e => setNewPackage({...newPackage, name: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-primary" />
                     </div>
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">Harga (Rp)</label>
-                      <input required type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: e.target.value})} className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style={{ MozAppearance: 'textfield' }} />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="relative">
-                      <label className="block text-sm text-gray-400 mb-1">Kategori</label>
-                      <button
-                        type="button"
-                        onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-                        onBlur={() => setTimeout(() => setOpenCategoryDropdown(false), 200)}
-                        className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary flex items-center justify-between transition-colors hover:bg-white/5"
-                      >
-                        <span>{newPackage.category || 'Pilih Kategori'}</span>
-                        <svg className={`w-4 h-4 ml-2 transition-transform ${openCategoryDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      
-                      <div className={`absolute left-0 top-full mt-1 w-full bg-[#0f172a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 transition-all duration-200 origin-top ${openCategoryDropdown ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                        {['Internet', 'Promo', 'Internet + Movie', 'Internet + Game', 'Internet + TV'].map((cat) => (
-                          <div 
-                            key={cat}
-                            onClick={() => {
-                              setNewPackage({...newPackage, category: cat});
-                              setOpenCategoryDropdown(false);
-                            }}
-                            className={`px-4 py-2.5 text-sm text-left cursor-pointer transition-colors hover:bg-primary/80 ${newPackage.category === cat ? 'bg-primary/20 text-white font-medium' : 'text-gray-200'}`}
-                          >
-                            {cat}
-                          </div>
-                        ))}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1">Kecepatan (Mbps)</label>
+                        <input required type="number" value={newPackage.speed} onChange={e => setNewPackage({...newPackage, speed: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style={{ MozAppearance: 'textfield' }} />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1">Harga (Rp)</label>
+                        <input required type="number" value={newPackage.price} onChange={e => setNewPackage({...newPackage, price: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style={{ MozAppearance: 'textfield' }} />
                       </div>
                     </div>
-                    <div className="relative">
-                      <label className="block text-sm text-gray-400 mb-1">Label / Badge</label>
-                      <button
-                        type="button"
-                        onClick={() => setOpenBadgeDropdown(!openBadgeDropdown)}
-                        onBlur={() => setTimeout(() => setOpenBadgeDropdown(false), 200)}
-                        className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary flex items-center justify-between transition-colors hover:bg-white/5"
-                      >
-                        <span>{newPackage.badge || 'Tidak Ada'}</span>
-                        <svg className={`w-4 h-4 ml-2 transition-transform ${openBadgeDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      
-                      <div className={`absolute left-0 top-full mt-1 w-full bg-[#0f172a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 transition-all duration-200 origin-top ${openBadgeDropdown ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                        {['', 'Paling Populer', 'Paling Murah', 'Paling Bervalue'].map((b, i) => (
-                          <div 
-                            key={i}
-                            onClick={() => {
-                              setNewPackage({...newPackage, badge: b});
-                              setOpenBadgeDropdown(false);
-                            }}
-                            className={`px-4 py-2.5 text-sm text-left cursor-pointer transition-colors hover:bg-primary/80 ${newPackage.badge === b ? 'bg-primary/20 text-white font-medium' : 'text-gray-200'}`}
-                          >
-                            {b === '' ? 'Tidak Ada' : b}
-                          </div>
-                        ))}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="relative">
+                        <label className="block text-xs text-gray-400 mb-1">Kategori</label>
+                        <button
+                          type="button"
+                          onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)}
+                          onBlur={() => setTimeout(() => setOpenCategoryDropdown(false), 200)}
+                          className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-primary flex items-center justify-between transition-colors hover:bg-white/5"
+                        >
+                          <span>{newPackage.category || 'Pilih Kategori'}</span>
+                          <svg className={`w-3.5 h-3.5 ml-2 transition-transform ${openCategoryDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        
+                        <div className={`absolute left-0 top-full mt-1 w-full bg-[#0f172a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 transition-all duration-200 origin-top ${openCategoryDropdown ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                          {['Internet', 'Promo', 'Internet + Movie', 'Internet + Game', 'Internet + TV'].map((cat) => (
+                            <div 
+                              key={cat}
+                              onClick={() => {
+                                setNewPackage({...newPackage, category: cat});
+                                setOpenCategoryDropdown(false);
+                              }}
+                              className={`px-3 py-2 text-xs text-left cursor-pointer transition-colors hover:bg-primary/80 ${newPackage.category === cat ? 'bg-primary/20 text-white font-medium' : 'text-gray-200'}`}
+                            >
+                              {cat}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <label className="block text-xs text-gray-400 mb-1">Label / Badge</label>
+                        <button
+                          type="button"
+                          onClick={() => setOpenBadgeDropdown(!openBadgeDropdown)}
+                          onBlur={() => setTimeout(() => setOpenBadgeDropdown(false), 200)}
+                          className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-primary flex items-center justify-between transition-colors hover:bg-white/5"
+                        >
+                          <span>{newPackage.badge || 'Tidak Ada'}</span>
+                          <svg className={`w-3.5 h-3.5 ml-2 transition-transform ${openBadgeDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        
+                        <div className={`absolute left-0 top-full mt-1 w-full bg-[#0f172a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 transition-all duration-200 origin-top ${openBadgeDropdown ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                          {['', 'Paling Populer', 'Paling Murah', 'Paling Bervalue'].map((b, i) => (
+                            <div 
+                              key={i}
+                              onClick={() => {
+                                setNewPackage({...newPackage, badge: b});
+                                setOpenBadgeDropdown(false);
+                              }}
+                              className={`px-3 py-2 text-xs text-left cursor-pointer transition-colors hover:bg-primary/80 ${newPackage.badge === b ? 'bg-primary/20 text-white font-medium' : 'text-gray-200'}`}
+                            >
+                              {b === '' ? 'Tidak Ada' : b}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-1">Fitur (pisahkan dengan koma)</label>
-                    <textarea required value={newPackage.features} onChange={e => setNewPackage({...newPackage, features: e.target.value})} placeholder="Unlimited Kuota, Free Router..." className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary h-20"></textarea>
-                  </div>
-                  <div className="flex gap-3 mt-6">
-                    <button type="button" onClick={() => setShowPackageModal(false)} className="flex-1 py-2 rounded-lg border border-white/10 text-gray-400 hover:text-white transition-colors">Batal</button>
-                    <button type="submit" className="flex-1 py-2 rounded-lg bg-primary hover:bg-indigo-500 text-white font-bold transition-colors">Simpan</button>
-                  </div>
-                </form>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Fitur (pisahkan dengan koma)</label>
+                      <textarea required value={newPackage.features} onChange={e => setNewPackage({...newPackage, features: e.target.value})} placeholder="Unlimited Kuota, Free Router..." className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-primary h-20"></textarea>
+                    </div>
+                    <div className="flex gap-3 mt-6">
+                      <button type="button" onClick={() => setShowPackageModal(false)} className="flex-1 py-2 rounded-lg border border-white/10 text-gray-400 hover:text-white transition-colors text-xs">Batal</button>
+                      <button type="submit" className="flex-1 py-2 rounded-lg bg-primary hover:bg-indigo-500 text-white font-bold transition-colors text-xs">Simpan</button>
+                    </div>
+                  </form>
+                </div>
               </div>
-            </div>
-          )}
-          </>
+            )}
+          </div>
         );
       case 'users':
         return (
-          <div className="glass-card p-6">
-            <h2 className="text-2xl font-bold mb-4">Database Pelanggan</h2>
-            <table className="w-full text-left text-sm">
-              <thead className="bg-white/5 border-b border-white/10">
-                <tr>
-                  <th className="p-3">Nama</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Role</th>
-                  <th className="p-3">Terdaftar</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {users.map(u => (
-                  <tr key={u._id}>
-                    <td className="p-3 text-white">{u.name}</td>
-                    <td className="p-3 text-gray-400">{u.email}</td>
-                    <td className="p-3"><span className="px-2 py-1 bg-white/10 rounded text-xs">{u.role}</span></td>
-                    <td className="p-3 text-gray-400">{new Date(u.createdAt).toLocaleDateString('id-ID')}</td>
+          <div className="glass-card p-4 sm:p-6">
+            <div className="pb-4 mb-4 border-b border-white/10">
+              <h2 className="text-lg sm:text-xl font-bold">Database Pelanggan</h2>
+              <p className="text-xs text-gray-400">Daftar pengguna dan pelanggan yang terdaftar</p>
+            </div>
+            
+            <div className="w-full overflow-x-auto rounded-xl border border-white/10 bg-black/20">
+              <table className="w-full text-left text-xs sm:text-sm min-w-[500px] whitespace-nowrap">
+                <thead className="bg-white/5 border-b border-white/10 text-gray-300 text-xs font-semibold uppercase tracking-wider">
+                  <tr>
+                    <th className="p-3">Nama</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Role</th>
+                    <th className="p-3">Terdaftar</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {users.map(u => (
+                    <tr key={u._id} className="hover:bg-white/5 transition-colors">
+                      <td className="p-3 text-white font-medium">{u.name}</td>
+                      <td className="p-3 text-gray-400">{u.email}</td>
+                      <td className="p-3"><span className="px-2 py-0.5 bg-white/10 rounded-full text-[11px] font-medium">{u.role}</span></td>
+                      <td className="p-3 text-gray-400 text-xs">{new Date(u.createdAt).toLocaleDateString('id-ID')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         );
       case 'employees':
         return (
-          <div className="glass-card p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Data Pegawai</h2>
-              <button onClick={() => { setEmpForm({ id: '', name: '', email: '', phone: '', role: 'cs', password: '' }); setShowEmpModal(true); }} className="bg-primary hover:bg-indigo-500 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">+ Tambah Pegawai</button>
+          <div className="glass-card p-4 sm:p-6">
+            <div className="pb-4 mb-4 border-b border-white/10 flex justify-between items-center">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold">Data Pegawai</h2>
+                <p className="text-xs text-gray-400">Daftar staf, manager, CS, dan admin</p>
+              </div>
+              <button onClick={() => { setEmpForm({ id: '', name: '', email: '', phone: '', role: 'cs', password: '' }); setShowEmpModal(true); }} className="bg-primary hover:bg-indigo-500 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-lg">+ Tambah Pegawai</button>
             </div>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {employees.map(emp => (
-                <div key={emp._id} className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl uppercase ${
+                <div key={emp._id} className="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-3.5 shadow-md">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm uppercase flex-shrink-0 ${
                     emp.role === 'cs' ? 'bg-blue-500/20 text-blue-400' :
                     emp.role === 'manager' ? 'bg-purple-500/20 text-purple-400' :
                     'bg-orange-500/20 text-orange-400'
                   }`}>
                     {emp.role.substring(0, 2)}
                   </div>
-                  <div>
-                    <div className="font-bold text-white capitalize">{emp.name}</div>
-                    <div className="text-xs text-gray-400">{emp.email} • {emp.phone}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-white text-sm truncate capitalize">{emp.name}</div>
+                    <div className="text-[11px] text-gray-400 truncate">{emp.email} • {emp.phone}</div>
                   </div>
-                  <div className="ml-auto flex gap-2">
-                    <button onClick={() => { setEmpForm({ id: emp._id, name: emp.name, email: emp.email, phone: emp.phone, role: emp.role, password: '' }); setShowEmpModal(true); }} className="text-xs bg-white/10 hover:bg-white/20 px-2 py-1 rounded text-white">Edit</button>
-                    {user.role === 'owner' && <button onClick={() => handleDeleteEmployee(emp._id)} className="text-xs bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2 py-1 rounded">Hapus</button>}
+                  <div className="flex gap-1.5 flex-shrink-0">
+                    <button onClick={() => { setEmpForm({ id: emp._id, name: emp.name, email: emp.email, phone: emp.phone, role: emp.role, password: '' }); setShowEmpModal(true); }} className="text-xs bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-lg text-white font-medium transition-colors">Edit</button>
+                    {user.role === 'owner' && <button onClick={() => handleDeleteEmployee(emp._id)} className="text-xs bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2.5 py-1 rounded-lg font-medium transition-colors">Hapus</button>}
                   </div>
                 </div>
               ))}
-              {employees.length === 0 && <div className="text-gray-400 text-sm">Belum ada pegawai.</div>}
+              {employees.length === 0 && <div className="text-gray-400 text-xs py-4">Belum ada pegawai.</div>}
             </div>
           </div>
         );
       case 'audit':
         return (
-          <div className="glass-card p-6 h-full flex flex-col">
-            <h2 className="text-2xl font-bold mb-6">Log Aktivitas Sistem</h2>
-            <div className="flex-1 overflow-y-auto pr-2 space-y-3">
+          <div className="glass-card p-4 sm:p-6 h-full flex flex-col">
+            <div className="pb-4 mb-4 border-b border-white/10">
+              <h2 className="text-lg sm:text-xl font-bold">Log Aktivitas Sistem</h2>
+              <p className="text-xs text-gray-400">Riwayat perubahan data oleh admin dan sistem</p>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-1 space-y-2.5">
               {logs.length === 0 ? (
-                <div className="text-gray-400 text-sm">Belum ada aktivitas tercatat.</div>
+                <div className="text-gray-400 text-xs text-center py-6">Belum ada aktivitas tercatat.</div>
               ) : (
                 logs.map(log => (
-                  <div key={log._id} className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-start gap-4">
-                    <div className="bg-primary/20 text-primary p-2 rounded-lg mt-1">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <div key={log._id} className="bg-white/5 border border-white/10 p-3 rounded-xl flex items-start gap-3 text-xs">
+                    <div className="bg-primary/20 text-primary p-2 rounded-lg mt-0.5 flex-shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="font-bold text-white text-sm capitalize">{log.user ? log.user.name : 'System'} <span className="text-xs text-gray-500 ml-1">({log.user ? log.user.role : 'bot'})</span></span>
-                        <span className="text-xs text-gray-500">{new Date(log.createdAt).toLocaleString('id-ID')}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start mb-0.5">
+                        <span className="font-bold text-white text-xs capitalize truncate">{log.user ? log.user.name : 'System'} <span className="text-[10px] text-gray-500 ml-1">({log.user ? log.user.role : 'bot'})</span></span>
+                        <span className="text-[10px] text-gray-500 flex-shrink-0 ml-2">{new Date(log.createdAt).toLocaleString('id-ID')}</span>
                       </div>
-                      <div className="text-sm">
-                        <span className={`text-xs px-2 py-0.5 rounded mr-2 ${log.action === 'MEMBUAT' ? 'bg-green-500/20 text-green-400' : log.action === 'MENGHAPUS' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>{log.action}</span>
-                        <span className="text-gray-400 mr-2">[{log.target}]</span>
+                      <div className="text-[11px] text-gray-300">
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded mr-1.5 font-semibold ${log.action === 'MEMBUAT' ? 'bg-green-500/20 text-green-400' : log.action === 'MENGHAPUS' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>{log.action}</span>
+                        <span className="text-gray-400 mr-1.5">[{log.target}]</span>
                         <span className="text-gray-200">{log.details}</span>
                       </div>
                     </div>
@@ -1277,22 +1261,26 @@ const AdminDashboard = () => {
         );
       case 'staffChat':
         return (
-          <div className="glass-card p-6 h-[75vh] flex flex-col">
-            <h2 className="text-2xl font-bold mb-4">Internal Staff Chat</h2>
-            <div className="flex-1 flex flex-col bg-black/20 border border-white/10 rounded-xl overflow-hidden min-h-0">
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="glass-card p-4 sm:p-6 h-[calc(100vh-6.5rem)] md:h-[calc(100vh-4.5rem)] flex flex-col">
+            <div className="pb-3 mb-3 border-b border-white/10">
+              <h2 className="text-lg sm:text-xl font-bold">Internal Staff Chat</h2>
+              <p className="text-xs text-gray-400">Saluran komunikasi antar tim Farosa WiFi</p>
+            </div>
+            
+            <div className="flex-1 flex flex-col bg-black/30 border border-white/10 rounded-2xl overflow-hidden min-h-0">
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {staffMessages.length === 0 ? (
-                  <div className="text-center text-gray-500 mt-10">Belum ada obrolan staff.</div>
+                  <div className="text-center text-gray-500 mt-10 text-xs">Belum ada obrolan staff.</div>
                 ) : (
                   staffMessages.map(msg => {
                     const isMe = msg.sender && msg.sender._id === user._id;
                     return (
                       <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                          <span className="text-[10px] text-gray-400 mb-1 ml-1">
+                        <div className={`max-w-[85%] sm:max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                          <span className="text-[10px] text-gray-400 mb-0.5 ml-1">
                             {msg.sender ? `${msg.sender.name} (${msg.sender.role})` : 'Unknown Staff'}
                           </span>
-                          <div className={`p-3 rounded-lg ${isMe ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
+                          <div className={`p-3 rounded-xl text-xs sm:text-sm ${isMe ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
                             {msg.text}
                           </div>
                         </div>
@@ -1301,15 +1289,15 @@ const AdminDashboard = () => {
                   })
                 )}
               </div>
-              <form onSubmit={handleSendStaffMessage} className="p-4 border-t border-white/10 bg-black/20 flex gap-2">
+              <form onSubmit={handleSendStaffMessage} className="p-3 border-t border-white/10 bg-black/40 flex gap-2">
                 <input 
                   type="text" 
                   value={staffChatInput}
                   onChange={e => setStaffChatInput(e.target.value)}
-                  className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-primary text-white" 
+                  className="flex-1 bg-black/50 border border-white/10 rounded-full px-4 py-2 text-xs focus:outline-none focus:border-primary text-white" 
                   placeholder="Kirim pesan ke staff lain..." 
                 />
-                <button type="submit" disabled={!staffChatInput.trim()} className="bg-primary hover:bg-indigo-500 px-6 py-2 rounded-lg font-bold disabled:opacity-50 transition-colors">
+                <button type="submit" disabled={!staffChatInput.trim()} className="bg-primary hover:bg-indigo-500 px-5 py-2 rounded-full text-xs font-bold disabled:opacity-50 transition-colors">
                   Kirim
                 </button>
               </form>
@@ -1317,7 +1305,7 @@ const AdminDashboard = () => {
           </div>
         );
       default:
-        return <div className="text-gray-400">Pilih menu di sidebar.</div>;
+        return <div className="text-gray-400 text-xs">Pilih menu di sidebar.</div>;
     }
   };
 
