@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollToPlugin);
 const Navbar = ({ userCity, onOpenModal }) => {
   const { user, logout } = useContext(AuthContext);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [passMsg, setPassMsg] = useState({ type: '', text: '' });
@@ -132,9 +133,25 @@ const Navbar = ({ userCity, onOpenModal }) => {
     <nav className="fixed w-full z-50 top-0 left-0 border-b border-white/10 bg-[#070709]/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex-shrink-0 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
-            <img src={FarosaLogo} alt="Farosa WiFi" className="h-10 md:h-12 w-10 md:w-12 object-cover rounded-md aspect-square" />
+          <div className="flex items-center gap-3">
+            {/* Mobile Hamburger Button (3 garis) di pojok kiri atas */}
+            <button 
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2 -ml-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors focus:outline-none flex items-center justify-center cursor-pointer md:hidden"
+              aria-label="Buka Menu Navigasi"
+              title="Menu Navigasi"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            
+            <div className="flex-shrink-0 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
+              <img src={FarosaLogo} alt="Farosa WiFi" className="h-10 md:h-12 w-10 md:w-12 object-cover rounded-md aspect-square" />
+            </div>
           </div>
+          
+          {/* Desktop Navigation Links */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               <a href="#hero" onClick={(e) => handleSmoothScroll(e, 'hero')} className="relative group px-3 py-2 text-sm font-medium text-white hover:text-primary transition-colors">
@@ -155,39 +172,39 @@ const Navbar = ({ userCity, onOpenModal }) => {
               </a>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <button 
               onClick={onOpenModal} 
-              className="flex items-center space-x-2 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-primary text-white px-5 py-2 rounded-full font-medium transition-all group"
+              className="flex items-center space-x-1.5 sm:space-x-2 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-primary text-white px-3 sm:px-5 py-2 rounded-full font-medium transition-all group"
             >
-              <svg className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
               </svg>
-              <span className="text-sm max-w-[150px] truncate">
+              <span className="text-xs sm:text-sm max-w-[90px] sm:max-w-[150px] truncate">
                 {userCity ? userCity.name : 'Pilih Lokasi'}
               </span>
             </button>
             
             {user ? (
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 sm:space-x-4">
                   {user.role !== 'user' && (
-                    <Link to="/admin" className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full border border-primary/50 hover:bg-primary hover:text-white transition-all">
+                    <Link to="/admin" className="text-xs bg-primary/20 text-primary px-2.5 sm:px-3 py-1 rounded-full border border-primary/50 hover:bg-primary hover:text-white transition-all whitespace-nowrap hidden sm:inline-block">
                       Admin Panel
                     </Link>
                   )}
                   <div 
-                    className="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-1.5 pr-3 rounded-full transition-colors"
+                    className="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-1 sm:p-1.5 sm:pr-3 rounded-full transition-colors"
                     onClick={openProfile}
                   >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm shadow-[0_0_10px_rgba(79,70,229,0.3)]">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
-                    <span className="text-sm text-gray-300 hidden sm:block font-medium">{user.name.split(' ')[0]}</span>
+                    <span className="text-sm text-gray-300 hidden md:block font-medium">{user.name.split(' ')[0]}</span>
                   </div>
-                  <button onClick={logout} className="text-xs text-red-400 hover:text-red-300 transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full">Logout</button>
+                  <button onClick={logout} className="text-xs text-red-400 hover:text-red-300 transition-colors bg-white/5 hover:bg-white/10 px-2.5 sm:px-3 py-1.5 rounded-full hidden sm:block">Logout</button>
                 </div>
               ) : (
-              <Link to="/login" className="bg-gradient-to-r from-primary to-accent hover:shadow-[0_0_15px_rgba(79,70,229,0.4)] text-white px-5 py-2 rounded-full font-bold text-sm transition-all">
+              <Link to="/login" className="bg-gradient-to-r from-primary to-accent hover:shadow-[0_0_15px_rgba(79,70,229,0.4)] text-white px-4 sm:px-5 py-2 rounded-full font-bold text-xs sm:text-sm transition-all whitespace-nowrap">
                 Masuk
               </Link>
             )}
@@ -195,6 +212,141 @@ const Navbar = ({ userCity, onOpenModal }) => {
         </div>
       </div>
     </nav>
+
+    {/* Mobile Navigation Drawer / Sidebar */}
+    <div 
+      className={`fixed inset-0 z-[100] transition-all duration-300 md:hidden ${
+        mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      {/* Backdrop */}
+      <div 
+        onClick={() => setMobileMenuOpen(false)}
+        className="absolute inset-0 bg-black/75 backdrop-blur-sm transition-opacity duration-300"
+      ></div>
+
+      {/* Drawer Content (Slide from Left) */}
+      <div 
+        className={`absolute top-0 left-0 bottom-0 w-[82%] max-w-sm bg-[#0d0d12]/98 border-r border-white/10 shadow-2xl p-6 flex flex-col justify-between transform transition-transform duration-300 ease-out z-10 ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="overflow-y-auto">
+          {/* Drawer Header */}
+          <div className="flex items-center justify-between pb-5 border-b border-white/10 mb-6">
+            <div className="flex items-center gap-3">
+              <img src={FarosaLogo} alt="Farosa WiFi" className="h-10 w-10 object-cover rounded-lg aspect-square" />
+              <div>
+                <span className="font-bold text-white text-base block leading-tight">Farosa WiFi</span>
+                <span className="text-[11px] text-gray-400">Navigasi Menu</span>
+              </div>
+            </div>
+            <button 
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+              title="Tutup Menu"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="space-y-2">
+            {[
+              { label: 'Beranda', id: 'hero', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+              { label: 'Paket Unggulan', id: 'pricing', icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' },
+              { label: 'Pilihan Paket', id: 'pilihan-paket', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
+              { label: 'Tentang Kami', id: 'info', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
+            ].map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleSmoothScroll(e, item.id);
+                }}
+                className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-gray-200 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all text-sm font-medium group"
+              >
+                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                  </svg>
+                </div>
+                <span>{item.label}</span>
+              </a>
+            ))}
+          </div>
+
+          {/* Quick Location Selection in Sidebar */}
+          <div className="mt-6 pt-6 border-t border-white/10">
+            <p className="text-xs text-gray-400 mb-2 px-1">Lokasi Terpilih:</p>
+            <button 
+              onClick={() => { setMobileMenuOpen(false); onOpenModal(); }} 
+              className="w-full flex items-center justify-between bg-white/5 border border-white/15 hover:bg-white/10 hover:border-primary text-white px-3.5 py-2.5 rounded-xl font-medium transition-all group"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                <span className="text-xs font-semibold truncate">
+                  {userCity ? userCity.name : 'Pilih Lokasi'}
+                </span>
+              </div>
+              <span className="text-xs text-primary group-hover:underline flex-shrink-0">Ganti</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Drawer Footer / Account Status */}
+        <div className="pt-5 border-t border-white/10 mt-4">
+          {user ? (
+            <div className="space-y-3">
+              <div 
+                onClick={() => { setMobileMenuOpen(false); openProfile(); }}
+                className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition-colors"
+              >
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm shadow-[0_0_10px_rgba(79,70,229,0.4)]">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                  <p className="text-[11px] text-gray-400 capitalize">Role: {user.role}</p>
+                </div>
+                <span className="text-xs text-primary">Lihat Profil &rarr;</span>
+              </div>
+
+              <div className="flex gap-2">
+                {user.role !== 'user' && (
+                  <Link 
+                    to="/admin" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 text-center text-xs bg-primary/20 text-primary py-2.5 rounded-xl border border-primary/50 font-semibold hover:bg-primary hover:text-white transition-all"
+                  >
+                    Admin Panel
+                  </Link>
+                )}
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); logout(); }} 
+                  className="flex-1 text-xs text-red-400 hover:text-white hover:bg-red-500/20 py-2.5 rounded-xl border border-red-500/30 transition-all font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link 
+              to="/login" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full block text-center bg-gradient-to-r from-primary to-accent hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] text-white py-3 rounded-xl font-bold text-sm transition-all"
+            >
+              Masuk ke Akun
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
 
       {/* Profile Modal */}
       {showProfileModal && (
