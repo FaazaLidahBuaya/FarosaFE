@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -44,7 +45,7 @@ const Form = () => {
     
     setStatus({ loading: true, error: null, success: false });
     try {
-      await axios.post('http://localhost:5000/api/installations', formData);
+      await axios.post(`${API_BASE_URL}/api/installations`, formData);
       setStatus({ loading: false, error: null, success: true });
       setFormData({ fullName: '', phoneNumber: '', email: '', fullAddress: '', selectedPackage: '20 Mbps', notes: '' });
     } catch (error) {

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const res = await axios.get('http://localhost:5000/api/auth/me', {
+          const res = await axios.get(`${API_BASE_URL}/api/auth/me`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -31,13 +32,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
     localStorage.setItem('token', res.data.token);
     setUser(res.data);
   };
 
   const register = async (name, email, password, phone, usageType, address, location) => {
-    const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password, phone, usageType, address, location });
+    const res = await axios.post(`${API_BASE_URL}/api/auth/register`, { name, email, password, phone, usageType, address, location });
     localStorage.setItem('token', res.data.token);
     setUser(res.data);
   };

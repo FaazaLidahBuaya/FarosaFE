@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
@@ -16,7 +17,7 @@ const LocationModal = ({ isOpen, onClose, onCitySelected }) => {
       setTimeout(() => setIsVisible(true), 10);
       document.body.style.overflow = 'hidden'; // Kunci scroll halaman belakang
       
-      axios.get('http://localhost:5000/api/cities')
+      axios.get(`${API_BASE_URL}/api/cities`)
         .then(res => setCities(res.data))
         .catch(err => console.error("Gagal memuat kota", err));
     } else {

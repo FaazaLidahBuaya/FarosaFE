@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 ﻿import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import gsap from 'gsap';
@@ -26,7 +27,7 @@ const Pricing = () => {
     if (savedCity) {
       setUserCity(JSON.parse(savedCity));
     }
-    axios.get('http://localhost:5000/api/packages')
+    axios.get(`${API_BASE_URL}/api/packages`)
       .then(res => setPackages(res.data))
       .catch(err => console.error("Gagal memuat paket", err));
   }, []);

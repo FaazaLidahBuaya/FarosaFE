@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -31,7 +32,7 @@ const FloatingChatbot = () => {
   const fetchChatHistory = async (background = false) => {
     try {
       const guestId = getGuestId();
-      const url = user ? `http://localhost:5000/api/chat?userId=${user._id}` : `http://localhost:5000/api/chat?guestId=${guestId}`;
+      const url = user ? `${API_BASE_URL}/api/chat?userId=${user._id}` : `${API_BASE_URL}/api/chat?guestId=${guestId}`;
       const res = await axios.get(url);
       
       if (res.data) {
@@ -96,7 +97,7 @@ const FloatingChatbot = () => {
         const payloadBase = user ? { userId: user._id } : { guestId };
         setIsTyping(true);
         try {
-          const res = await axios.post('http://localhost:5000/api/chat', { ...payloadBase, sender: 'bot', text: confirmMsgText });
+          const res = await axios.post(`${API_BASE_URL}/api/chat`, { ...payloadBase, sender: 'bot', text: confirmMsgText });
           setMessages(prev => [...prev, res.data.addedMessage || res.data]);
           if (res.data.csMode !== undefined) setCsMode(res.data.csMode);
         } catch (e) {
@@ -149,7 +150,7 @@ const FloatingChatbot = () => {
     const payloadBase = user ? { userId: user._id } : { guestId };
 
     try {
-      await axios.post('http://localhost:5000/api/chat', { ...payloadBase, sender: 'user', text: userMessageText });
+      await axios.post(`${API_BASE_URL}/api/chat`, { ...payloadBase, sender: 'user', text: userMessageText });
       
       if (csMode) {
         setIsTyping(false);
@@ -169,22 +170,22 @@ const FloatingChatbot = () => {
           status: 'Pending'
         };
 
-        await axios.post('http://localhost:5000/api/installations', installationData);
+        await axios.post(`${API_BASE_URL}/api/installations`, installationData);
         
         setTimeout(async () => {
           const botReplyText = 'Terima kasih! ✅ Pesanan Anda telah berhasil masuk ke sistem kami.\n\nManager kami akan segera memproses dan mengonfirmasi pesanan Anda beserta jadwal pemasangan. Anda akan mendapatkan notifikasi di chat ini saat pesanan sudah dikonfirmasi.\n\nMohon ditunggu ya! 🙏';
-          const res = await axios.post('http://localhost:5000/api/chat', { ...payloadBase, sender: 'bot', text: botReplyText });
+          const res = await axios.post(`${API_BASE_URL}/api/chat`, { ...payloadBase, sender: 'bot', text: botReplyText });
           setMessages(prev => [...prev, res.data.addedMessage || res.data]);
           setIsTyping(false);
           setPendingOrder(null);
         }, 1500);
 
       } else if (!pendingOrder && userMessageText.toLowerCase() === 'iya') {
-        await axios.put('http://localhost:5000/api/chat/mode', { ...payloadBase, csMode: true });
+        await axios.put(`${API_BASE_URL}/api/chat/mode`, { ...payloadBase, csMode: true });
         setCsMode(true);
         setTimeout(async () => {
           const botReplyText = 'Baik, mohon tunggu sebentar. Customer Service kami akan segera membalas pesan Anda.';
-          const res = await axios.post('http://localhost:5000/api/chat', { ...payloadBase, sender: 'bot', text: botReplyText });
+          const res = await axios.post(`${API_BASE_URL}/api/chat`, { ...payloadBase, sender: 'bot', text: botReplyText });
           setMessages(prev => [...prev, res.data.addedMessage || res.data]);
           setIsTyping(false);
         }, 1000);
@@ -194,7 +195,7 @@ const FloatingChatbot = () => {
           if (pendingOrder) {
             botReplyText = 'Jika ada data yang salah, mohon hubungi call center kami. Untuk melanjutkan pesanan saat ini, ketik "benar".';
           }
-          const res = await axios.post('http://localhost:5000/api/chat', { ...payloadBase, sender: 'bot', text: botReplyText });
+          const res = await axios.post(`${API_BASE_URL}/api/chat`, { ...payloadBase, sender: 'bot', text: botReplyText });
           setMessages(prev => [...prev, res.data.addedMessage || res.data]);
           setIsTyping(false);
         }, 1500);

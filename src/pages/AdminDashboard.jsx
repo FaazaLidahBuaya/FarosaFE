@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect, useContext, Suspense, useRef } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -149,7 +150,7 @@ const AdminDashboard = () => {
   const fetchUnreadStaffStats = async () => {
     if (!user) return;
     try {
-      const response = await axios.get(`http://localhost:5000/api/staff-chat/unread?userId=${user._id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/staff-chat/unread?userId=${user._id}`);
       setUnreadStaffStats(response.data);
     } catch (error) {
       console.error("Error fetching unread staff stats", error);
@@ -160,7 +161,7 @@ const AdminDashboard = () => {
     if (selectedChat && selectedChat.type === 'staff' && user) {
       const fetchDirectMessages = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/staff-chat?userId=${user._id}&otherId=${selectedChat.id}`);
+          const res = await axios.get(`${API_BASE_URL}/api/staff-chat?userId=${user._id}&otherId=${selectedChat.id}`);
           setStaffMessages(res.data);
           // Refresh unread stats after reading
           fetchUnreadStaffStats();
@@ -174,7 +175,7 @@ const AdminDashboard = () => {
 
   const fetchAllChats = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/chat/all');
+      const response = await axios.get(`${API_BASE_URL}/api/chat/all`);
       setAllChats(response.data);
     } catch (error) {
       console.error("Error fetching chats", error);
@@ -183,7 +184,7 @@ const AdminDashboard = () => {
 
   const fetchDbPackages = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/packages');
+      const res = await axios.get(`${API_BASE_URL}/api/packages`);
       setDbPackages(res.data);
     } catch (error) {
       console.error("Error fetching packages", error);
@@ -200,10 +201,10 @@ const AdminDashboard = () => {
         price: parseInt(newPackage.price)
       };
       if (newPackage._id) {
-        await axios.put(`http://localhost:5000/api/packages/${newPackage._id}`, payload);
+        await axios.put(`${API_BASE_URL}/api/packages/${newPackage._id}`, payload);
         showToast('Paket/Promo berhasil diperbarui!');
       } else {
-        await axios.post('http://localhost:5000/api/packages', payload);
+        await axios.post(`${API_BASE_URL}/api/packages`, payload);
         showToast('Paket/Promo berhasil ditambahkan!');
       }
       setShowPackageModal(false);
@@ -218,7 +219,7 @@ const AdminDashboard = () => {
   const handleDeletePackage = async (id) => {
     if (!window.confirm('Yakin ingin menghapus paket/promo ini?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/packages/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/packages/${id}`);
       fetchDbPackages();
       showToast('Paket/Promo berhasil dihapus!');
     } catch (error) {
@@ -230,7 +231,7 @@ const AdminDashboard = () => {
   const fetchRequests = async () => {
     try {
       setLoadingReq(true);
-      const response = await axios.get('http://localhost:5000/api/installations');
+      const response = await axios.get(`${API_BASE_URL}/api/installations`);
       setRequests(response.data.data);
       setLoadingReq(false);
     } catch (error) {
@@ -242,7 +243,7 @@ const AdminDashboard = () => {
   const fetchLogs = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/logs', {
+      const res = await axios.get(`${API_BASE_URL}/api/logs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setLogs(res.data);
@@ -255,9 +256,9 @@ const AdminDashboard = () => {
     try {
       // Fetching concurrent data
       const [resUsers, resInst, resPack] = await Promise.all([
-        axios.get('http://localhost:5000/api/auth/users?role=user'),
-        axios.get('http://localhost:5000/api/installations', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
-        axios.get('http://localhost:5000/api/packages')
+        axios.get(`${API_BASE_URL}/api/auth/users?role=user`),
+        axios.get(`${API_BASE_URL}/api/installations`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
+        axios.get(`${API_BASE_URL}/api/packages`)
       ]);
       const totalUsers = resUsers.data.length;
       const recentUsers = resUsers.data.slice(0, 10).length; // Simulate recent
@@ -275,7 +276,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/users?role=user');
+      const res = await axios.get(`${API_BASE_URL}/api/auth/users?role=user`);
       setUsers(res.data);
     } catch (error) {
       console.error("Error fetching users", error);
@@ -285,10 +286,10 @@ const AdminDashboard = () => {
   const fetchEmployees = async () => {
     try {
       const [resCS, resMg, resOwn, resAdmin] = await Promise.all([
-        axios.get('http://localhost:5000/api/auth/users?role=cs'),
-        axios.get('http://localhost:5000/api/auth/users?role=manager'),
-        axios.get('http://localhost:5000/api/auth/users?role=owner'),
-        axios.get('http://localhost:5000/api/auth/users?role=admin')
+        axios.get(`${API_BASE_URL}/api/auth/users?role=cs`),
+        axios.get(`${API_BASE_URL}/api/auth/users?role=manager`),
+        axios.get(`${API_BASE_URL}/api/auth/users?role=owner`),
+        axios.get(`${API_BASE_URL}/api/auth/users?role=admin`)
       ]);
       setEmployees([...resCS.data, ...resMg.data, ...resOwn.data, ...resAdmin.data]);
     } catch (error) {
@@ -302,9 +303,9 @@ const AdminDashboard = () => {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       if (empForm.id) {
-        await axios.put(`http://localhost:5000/api/users/${empForm.id}`, empForm, config);
+        await axios.put(`${API_BASE_URL}/api/users/${empForm.id}`, empForm, config);
       } else {
-        await axios.post('http://localhost:5000/api/users', empForm, config);
+        await axios.post(`${API_BASE_URL}/api/users`, empForm, config);
       }
       setShowEmpModal(false);
       fetchEmployees();
@@ -317,7 +318,7 @@ const AdminDashboard = () => {
     if(!window.confirm('Yakin ingin menghapus pegawai ini?')) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/users/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchEmployees();
@@ -328,7 +329,7 @@ const AdminDashboard = () => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:5000/api/installations/${id}/status`, { status: newStatus });
+      await axios.patch(`${API_BASE_URL}/api/installations/${id}/status`, { status: newStatus });
       fetchRequests();
     } catch (error) {
       console.error("Error updating status", error);
@@ -343,7 +344,7 @@ const AdminDashboard = () => {
     }
     setConfirmLoading(true);
     try {
-      await axios.patch(`http://localhost:5000/api/installations/${confirmModal._id}/confirm`, {
+      await axios.patch(`${API_BASE_URL}/api/installations/${confirmModal._id}/confirm`, {
         installationDate: installDate,
         assignedTeam: assignedTeam,
         confirmedBy: user.name
@@ -407,7 +408,7 @@ const AdminDashboard = () => {
     try {
       if (selectedChat.type === 'customer') {
         const payloadBase = selectedChat.data.userId ? { userId: selectedChat.data.userId._id || selectedChat.data.userId } : { guestId: selectedChat.data.guestId };
-        const res = await axios.post('http://localhost:5000/api/chat', { 
+        const res = await axios.post(`${API_BASE_URL}/api/chat`, { 
           ...payloadBase, 
           sender: 'bot', 
           text: chatInput 
@@ -418,7 +419,7 @@ const AdminDashboard = () => {
         setSelectedChat({...selectedChat, data: {...selectedChat.data, messages: updatedMessages}});
         setAllChats(prev => prev.map(c => c._id === selectedChat.id ? {...c, messages: updatedMessages} : c));
       } else if (selectedChat.type === 'staff') {
-        const res = await axios.post('http://localhost:5000/api/staff-chat', { 
+        const res = await axios.post(`${API_BASE_URL}/api/staff-chat`, { 
           senderId: user._id,
           receiverId: selectedChat.id,
           text: chatInput

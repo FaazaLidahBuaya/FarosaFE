@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -65,7 +66,7 @@ const Navbar = ({ userCity, onOpenModal }) => {
         const fetchMyInstallations = async () => {
           setLoadingInst(true);
           try {
-            const res = await axios.get(`http://localhost:5000/api/installations?userId=${user._id}`);
+            const res = await axios.get(`${API_BASE_URL}/api/installations?userId=${user._id}`);
             setMyInstallations(res.data.data || []);
           } catch (error) {
             console.error("Error fetching installations", error);
@@ -104,7 +105,7 @@ const Navbar = ({ userCity, onOpenModal }) => {
     setPassMsg({ type: '', text: '' });
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.put('http://localhost:5000/api/auth/change-password', { oldPassword, newPassword }, {
+      const res = await axios.put(`${API_BASE_URL}/api/auth/change-password`, { oldPassword, newPassword }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPassMsg({ type: 'success', text: res.data.message });
