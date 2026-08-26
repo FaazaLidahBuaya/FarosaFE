@@ -42,22 +42,22 @@ const Scene = ({ showRocket = true }) => {
         gsap.timeline({
           scrollTrigger: { trigger: "#pricing", start: "top bottom", end: "top 40%", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: 0, y: -1, z: 3 }, { x: -0.65, y: -2, z: 4, ease: "power2.inOut", overwrite: "auto" }, 0)
-        .fromTo(rocketObj.rotation, { x: 0.5, y: -1.2, z: 0.3 }, { x: -0.2, y: -0.6, z: 0.2, ease: "power2.inOut", overwrite: "auto" }, 0);
+        .fromTo(rocketObj.position, { x: 0, y: -1, z: 3 }, { x: -0.65, y: -2, z: 4, ease: "power2.inOut" }, 0)
+        .fromTo(rocketObj.rotation, { x: 0.5, y: -1.2, z: 0.3 }, { x: -0.2, y: -0.6, z: 0.2, ease: "power2.inOut" }, 0);
 
         // 1.5. PAKET UNGGULAN -> PILIHAN PAKET (Sedikit ke Kanan)
         gsap.timeline({
           scrollTrigger: { trigger: "#pilihan-paket", start: "top 85%", end: "top 20%", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: -0.65, y: -2, z: 4 }, { x: 0.9, y: -0.5, z: 3.5, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0)
-        .fromTo(rocketObj.rotation, { x: -0.2, y: -0.6, z: 0.2 }, { x: 0.25, y: 0.6, z: -0.2, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0);
+        .fromTo(rocketObj.position, { x: -0.65, y: -2, z: 4 }, { x: 0.9, y: -0.5, z: 3.5, ease: "power2.inOut", immediateRender: false }, 0)
+        .fromTo(rocketObj.rotation, { x: -0.2, y: -0.6, z: 0.2 }, { x: 0.25, y: 0.6, z: -0.2, ease: "power2.inOut", immediateRender: false }, 0);
 
         // 2. PILIHAN PAKET -> INFO
         gsap.timeline({
           scrollTrigger: { trigger: "#info", start: "top 85%", end: "center center", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: 0.9, y: -0.5, z: 3.5 }, { x: 3.0, y: 2, z: 2, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0)
-        .fromTo(rocketObj.rotation, { x: 0.25, y: 0.6, z: -0.2 }, { x: 0.5, y: -0.5, z: 0.2, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0);
+        .fromTo(rocketObj.position, { x: 0.9, y: -0.5, z: 3.5 }, { x: 3.0, y: 2, z: 2, ease: "power2.inOut", immediateRender: false }, 0)
+        .fromTo(rocketObj.rotation, { x: 0.25, y: 0.6, z: -0.2 }, { x: 0.5, y: -0.5, z: 0.2, ease: "power2.inOut", immediateRender: false }, 0);
       });
 
       // --- DESKTOP ROCKET ANIMATIONS ---
@@ -66,22 +66,22 @@ const Scene = ({ showRocket = true }) => {
         gsap.timeline({
           scrollTrigger: { trigger: "#pricing", start: "top bottom", end: "top 40%", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: 0, y: -1, z: 3 }, { x: 3, y: -2, z: 4, ease: "power2.inOut", overwrite: "auto" }, 0)
-        .fromTo(rocketObj.rotation, { x: 0.5, y: -1.2, z: 0.3 }, { x: -0.2, y: 1.2, z: -0.5, ease: "power2.inOut", overwrite: "auto" }, 0);
+        .fromTo(rocketObj.position, { x: 0, y: -1, z: 3 }, { x: 3, y: -2, z: 4, ease: "power2.inOut" }, 0)
+        .fromTo(rocketObj.rotation, { x: 0.5, y: -1.2, z: 0.3 }, { x: -0.2, y: 1.2, z: -0.5, ease: "power2.inOut" }, 0);
 
         // 1.5. PRICING -> PILIHAN PAKET
         gsap.timeline({
-          scrollTrigger: { trigger: "#pilihan-paket", start: "top 80%", end: "top 20%", scrub: 1.5 }
+          scrollTrigger: { trigger: "#pilihan-paket", start: "top 85%", end: "top 20%", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: 3, y: -2, z: 4 }, { x: -3, y: 0, z: 3, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0)
-        .fromTo(rocketObj.rotation, { x: -0.2, y: 1.2, z: -0.5 }, { x: 0.4, y: 0.3, z: 0.2, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0);
+        .fromTo(rocketObj.position, { x: 3, y: -2, z: 4 }, { x: -3, y: 0, z: 3, ease: "power2.inOut", immediateRender: false }, 0)
+        .fromTo(rocketObj.rotation, { x: -0.2, y: 1.2, z: -0.5 }, { x: 0.4, y: 0.3, z: 0.2, ease: "power2.inOut", immediateRender: false }, 0);
 
         // 2. PILIHAN PAKET -> INFO
         gsap.timeline({
-          scrollTrigger: { trigger: "#info", start: "top 80%", end: "center center", scrub: 1.5 }
+          scrollTrigger: { trigger: "#info", start: "top 85%", end: "center center", scrub: 1.5 }
         })
-        .fromTo(rocketObj.position, { x: -3, y: 0, z: 3 }, { x: 5, y: 2, z: 2, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0)
-        .fromTo(rocketObj.rotation, { x: 0.4, y: 0.3, z: 0.2 }, { x: 0.5, y: -0.5, z: 0.2, ease: "power2.inOut", immediateRender: false, overwrite: "auto" }, 0);
+        .fromTo(rocketObj.position, { x: -3, y: 0, z: 3 }, { x: 5, y: 2, z: 2, ease: "power2.inOut", immediateRender: false }, 0)
+        .fromTo(rocketObj.rotation, { x: 0.4, y: 0.3, z: 0.2 }, { x: 0.5, y: -0.5, z: 0.2, ease: "power2.inOut", immediateRender: false }, 0);
       });
 
       // --- EARTH ANIMATIONS (All Screens) ---
